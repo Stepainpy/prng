@@ -1,3 +1,7 @@
+/* Taken from:
+https://en.wikipedia.org/wiki/Xorshift
+https://prng.di.unimi.it/
+*/
 #ifndef PRNG_H
 #define PRNG_H
 
