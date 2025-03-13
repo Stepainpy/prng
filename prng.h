@@ -50,4 +50,15 @@ PRNG_LIST_OF_NAMES // Seed functions
 uint32_t prng_splitmix32(uint32_t* x);
 uint64_t prng_splitmix64(uint64_t* x);
 
+#ifndef PRNG_DEFAULT
+#define PRNG_DEFAULT xoshiro256ss
+#endif
+
+#define PRNGN_STATE_EXP(bn)    PRNGN_STATE(bn)
+#define PRNGN_FUNC_EXP(bn, fn) PRNGN_FUNC(bn, fn)
+
+#define prng_state_t PRNGN_STATE_EXP(PRNG_DEFAULT)
+#define prng_gen  PRNGN_FUNC_EXP(PRNG_DEFAULT, gen)
+#define prng_seed PRNGN_FUNC_EXP(PRNG_DEFAULT, seed)
+
 #endif // PRNG_H
