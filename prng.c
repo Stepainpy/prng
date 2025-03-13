@@ -5,7 +5,7 @@ void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, uint ## bits ## _t seed) { \
     for (size_t i = 0; i < cnt; i++) \
         s->s[i] = prng_splitmix ## bits(&seed); \
 }
-PRNG_LIST_OF_NAMES(DO) // Seed function definitions
+PRNG_LIST_OF_NAMES // Seed function definitions
 #undef DO
 
 uint32_t prng_splitmix32(uint32_t* x) {
