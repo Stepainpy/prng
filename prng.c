@@ -31,6 +31,18 @@ void prng_xoroshiro1024s_seed(prng_xoroshiro1024s_state_t* s, uint64_t seed) {
     s->p = 0;
 }
 
+void prng_mt19937_seed(prng_mt19937_state_t* s, uint32_t seed) {
+    s->s[0] = seed;
+    for (size_t i = 1; i < 624; i++) {
+        uint32_t x = s->s[i - 1];
+        x ^= x >> 30;
+        x *= 0x6c078965;
+        x += i;
+        s->s[i] = x;
+    }
+    s->p = 624;
+}
+
 uint32_t prng_splitmix32(uint32_t* x) {
     uint32_t z = (*x += 0x9e3779b9);
     z = (z ^ (z >> 15)) * 0x85ebca6b;
@@ -334,4 +346,43 @@ uint64_t prng_xoroshiro1024s_gen(prng_xoroshiro1024s_state_t* s) {
     s->s[s->p] = rol64(s15, 36);
 
     return res;
+}
+
+static void mt19937_step(prng_mt19937_state_t* s) {
+    const uint32_t high_bit = 0x80000000;
+    const uint32_t low_bits = ~high_bit;
+
+    for (size_t k = 0; k < 624 - 397; k++) {
+        uint32_t y = (s->s[k] & high_bit) | (s->s[k + 1] & low_bits);
+        s->s[k] = s->s[k + 397] ^ (y >> 1) ^ (y & 1 ? 0x9908b0df : 0);
+    }
+
+    for (size_t k = 624 - 397; k < 623; k++) {
+        uint32_t y = (s->s[k] & high_bit) | (s->s[k + 1] & low_bits);
+        s->s[k] = s->s[k + 397 - 624] ^ (y >> 1) ^ (y & 1 ? 0x9908b0df : 0);
+    }
+
+    uint32_t y = (s->s[623] & high_bit) | (s->s[0] & low_bits);
+    s->s[623] = s->s[396] ^ (y >> 1) ^ (y & 1 ? 0x9908b0df : 0);
+    s->p = 0;
+}
+
+void prng_mt19937_discard(prng_mt19937_state_t* s, size_t z) {
+    while (z > 624 - s->p) {
+        z -= 624 - s->p;
+        mt19937_step(s);
+    } s->p += z;
+}
+
+uint32_t prng_mt19937_gen(prng_mt19937_state_t* s) {
+    if (s->p >= 624)
+        mt19937_step(s);
+    
+    uint32_t z = s->s[s->p++];
+    z ^= (z >> 11) & 0xffffffff;
+    z ^= (z <<  7) & 0x9d2c5680;
+    z ^= (z << 15) & 0xefc60000;
+    z ^= (z >> 18);
+
+    return z;
 }

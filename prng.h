@@ -42,7 +42,8 @@ DO(xoshiro512p,   uint64_t, 8)
 #define PRNG_LIST_OF_UNUSUAL_NAMES \
 DO(xoroshiro1024pp, uint64_t, uint64_t s[16]; size_t p;) \
 DO(xoroshiro1024ss, uint64_t, uint64_t s[16]; size_t p;) \
-DO(xoroshiro1024s,  uint64_t, uint64_t s[16]; size_t p;)
+DO(xoroshiro1024s,  uint64_t, uint64_t s[16]; size_t p;) \
+DO(mt19937, uint32_t, uint32_t s[624]; size_t p;)
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn
@@ -71,6 +72,7 @@ PRNG_LIST_OF_UNUSUAL_NAMES
 
 uint32_t prng_splitmix32(uint32_t* x);
 uint64_t prng_splitmix64(uint64_t* x);
+void prng_mt19937_discard(prng_mt19937_state_t* state, size_t skip);
 
 #ifndef PRNG_DEFAULT
 #define PRNG_DEFAULT xoshiro256ss
