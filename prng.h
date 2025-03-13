@@ -29,6 +29,17 @@ DO(xoshiro512pp,  uint64_t, 8) \
 DO(xoshiro512ss,  uint64_t, 8) \
 DO(xoshiro512p,   uint64_t, 8)
 
+/* DO:
+ * basename
+ * return type
+ * state structure
+ */
+
+#define PRNG_LIST_OF_UNUSUAL_NAMES \
+DO(xoroshiro1024pp, uint64_t, uint64_t s[16]; int p;) \
+DO(xoroshiro1024ss, uint64_t, uint64_t s[16]; int p;) \
+DO(xoroshiro1024s,  uint64_t, uint64_t s[16]; int p;)
+
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn
 
@@ -37,14 +48,21 @@ typedef struct PRNGN_STATE(name) { ist s[cnt]; } PRNGN_STATE(name);
 PRNG_LIST_OF_NAMES // State structures
 #undef DO
 
+#define DO(name, _, strin) \
+typedef struct PRNGN_STATE(name) { strin } PRNGN_STATE(name);
+PRNG_LIST_OF_UNUSUAL_NAMES // Unusual state structures
+#undef DO
+
 #define DO(name, ret, _) \
 ret PRNGN_FUNC(name, gen)(PRNGN_STATE(name)* state);
 PRNG_LIST_OF_NAMES // Generate functions
+PRNG_LIST_OF_UNUSUAL_NAMES
 #undef DO
 
 #define DO(name, ist, _) \
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* state, ist seed);
 PRNG_LIST_OF_NAMES // Seed functions
+PRNG_LIST_OF_UNUSUAL_NAMES
 #undef DO
 
 uint32_t prng_splitmix32(uint32_t* x);

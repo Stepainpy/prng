@@ -13,6 +13,24 @@ void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, ist seed) { \
 PRNG_LIST_OF_NAMES // Seed function definitions
 #undef DO
 
+void prng_xoroshiro1024pp_seed(prng_xoroshiro1024pp_state_t* s, uint64_t seed) {
+    for (size_t i = 0; i < 16; i++)
+        s->s[i] = prng_splitmix64(&seed);
+    s->p = 0;
+}
+
+void prng_xoroshiro1024ss_seed(prng_xoroshiro1024ss_state_t* s, uint64_t seed) {
+    for (size_t i = 0; i < 16; i++)
+        s->s[i] = prng_splitmix64(&seed);
+    s->p = 0;
+}
+
+void prng_xoroshiro1024s_seed(prng_xoroshiro1024s_state_t* s, uint64_t seed) {
+    for (size_t i = 0; i < 16; i++)
+        s->s[i] = prng_splitmix64(&seed);
+    s->p = 0;
+}
+
 uint32_t prng_splitmix32(uint32_t* x) {
     uint32_t z = (*x += 0x9e3779b9);
     z = (z ^ (z >> 15)) * 0x85ebca6b;
@@ -275,6 +293,45 @@ uint64_t prng_xoshiro512p_gen(prng_xoshiro512p_state_t* s) {
 
     s->s[6] ^= t;
     s->s[7] = rol64(s->s[7], 21);
+
+    return res;
+}
+
+uint64_t prng_xoroshiro1024pp_gen(prng_xoroshiro1024pp_state_t* s) {
+    int q = s->p;
+    uint64_t s0 = s->s[s->p = (s->p + 1) & 15];
+    uint64_t s15 = s->s[q];
+    const uint64_t res = rol64(s0 + s15, 23) + s15;
+
+    s15 ^= s0;
+    s->s[q] = rol64(s0, 25) ^ s15 ^ (s15 << 27);
+    s->s[s->p] = rol64(s15, 36);
+
+    return res;
+}
+
+uint64_t prng_xoroshiro1024ss_gen(prng_xoroshiro1024ss_state_t* s) {
+    int q = s->p;
+    uint64_t s0 = s->s[s->p = (s->p + 1) & 15];
+    uint64_t s15 = s->s[q];
+    const uint64_t res = rol64(s0 * 5, 7) * 9;
+
+    s15 ^= s0;
+    s->s[q] = rol64(s0, 25) ^ s15 ^ (s15 << 27);
+    s->s[s->p] = rol64(s15, 36);
+
+    return res;
+}
+
+uint64_t prng_xoroshiro1024s_gen(prng_xoroshiro1024s_state_t* s) {
+    int q = s->p;
+    uint64_t s0 = s->s[s->p = (s->p + 1) & 15];
+    uint64_t s15 = s->s[q];
+    const uint64_t res = s0 * 0x9e3779b97f4a7c13;
+
+    s15 ^= s0;
+    s->s[q] = rol64(s0, 25) ^ s15 ^ (s15 << 27);
+    s->s[s->p] = rol64(s15, 36);
 
     return res;
 }
