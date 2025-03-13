@@ -53,7 +53,7 @@ uint64_t prng_xorshift64s_gen(prng_xorshift64s_state_t* s) {
     s->s[0] ^= s->s[0] >> 12;
     s->s[0] ^= s->s[0] << 25;
     s->s[0] ^= s->s[0] >> 27;
-    return s->s[0] * UINT64_C(0x2545F4914F6CDD1D);
+    return s->s[0] * 0x2545F4914F6CDD1D;
 }
 
 uint32_t prng_xorshift128_gen(prng_xorshift128_state_t* st) {
@@ -106,6 +106,30 @@ uint32_t prng_xorwow_gen(prng_xorwow_state_t* st) {
     st->s[0] = t;
     st->s[5] += 362437;
     return t + st->s[5];
+}
+
+uint32_t prng_xoroshiro64s_gen(prng_xoroshiro64s_state_t* s) {
+    uint32_t s0 = s->s[0];
+    uint32_t s1 = s->s[1];
+    const uint32_t res = s0 * 0x9E3779BB;
+
+    s1 ^= s0;
+    s->s[0] = rol32(s0, 26) ^ s1 ^ (s1 << 9);
+    s->s[1] = rol32(s1, 13);
+
+    return res;
+}
+
+uint32_t prng_xoroshiro64ss_gen(prng_xoroshiro64ss_state_t* s) {
+    uint32_t s0 = s->s[0];
+    uint32_t s1 = s->s[1];
+    const uint32_t res = rol32(s0 * 0x9E3779BB, 5) * 5;
+
+    s1 ^= s0;
+    s->s[0] = rol32(s0, 26) ^ s1 ^ (s1 << 9);
+    s->s[1] = rol32(s1, 13);
+
+    return res;
 }
 
 uint32_t prng_xoshiro128pp_gen(prng_xoshiro128pp_state_t* s) {

@@ -17,6 +17,8 @@ DO(xorshift128,   uint32_t, 4) \
 DO(xorshift128p,  uint64_t, 2) \
 DO(xorshiftr128p, uint64_t, 2) \
 DO(xorwow,        uint32_t, 6) \
+DO(xoroshiro64s,  uint32_t, 2) \
+DO(xoroshiro64ss, uint32_t, 2) \
 DO(xoshiro128pp,  uint32_t, 4) \
 DO(xoshiro128ss,  uint32_t, 4) \
 DO(xoshiro128p,   uint32_t, 4) \
