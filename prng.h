@@ -40,9 +40,9 @@ DO(xoshiro512p,   uint64_t, 8)
  */
 
 #define PRNG_LIST_OF_UNUSUAL_NAMES \
-DO(xoroshiro1024pp, uint64_t, uint64_t s[16]; int p;) \
-DO(xoroshiro1024ss, uint64_t, uint64_t s[16]; int p;) \
-DO(xoroshiro1024s,  uint64_t, uint64_t s[16]; int p;)
+DO(xoroshiro1024pp, uint64_t, uint64_t s[16]; size_t p;) \
+DO(xoroshiro1024ss, uint64_t, uint64_t s[16]; size_t p;) \
+DO(xoroshiro1024s,  uint64_t, uint64_t s[16]; size_t p;)
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn

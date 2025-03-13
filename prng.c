@@ -298,7 +298,7 @@ uint64_t prng_xoshiro512p_gen(prng_xoshiro512p_state_t* s) {
 }
 
 uint64_t prng_xoroshiro1024pp_gen(prng_xoroshiro1024pp_state_t* s) {
-    int q = s->p;
+    size_t q = s->p;
     uint64_t s0 = s->s[s->p = (s->p + 1) & 15];
     uint64_t s15 = s->s[q];
     const uint64_t res = rol64(s0 + s15, 23) + s15;
@@ -311,7 +311,7 @@ uint64_t prng_xoroshiro1024pp_gen(prng_xoroshiro1024pp_state_t* s) {
 }
 
 uint64_t prng_xoroshiro1024ss_gen(prng_xoroshiro1024ss_state_t* s) {
-    int q = s->p;
+    size_t q = s->p;
     uint64_t s0 = s->s[s->p = (s->p + 1) & 15];
     uint64_t s15 = s->s[q];
     const uint64_t res = rol64(s0 * 5, 7) * 9;
@@ -324,7 +324,7 @@ uint64_t prng_xoroshiro1024ss_gen(prng_xoroshiro1024ss_state_t* s) {
 }
 
 uint64_t prng_xoroshiro1024s_gen(prng_xoroshiro1024s_state_t* s) {
-    int q = s->p;
+    size_t q = s->p;
     uint64_t s0 = s->s[s->p = (s->p + 1) & 15];
     uint64_t s15 = s->s[q];
     const uint64_t res = s0 * 0x9e3779b97f4a7c13;
