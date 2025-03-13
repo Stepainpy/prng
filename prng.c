@@ -1,9 +1,14 @@
 #include "prng.h"
 
-#define DO(name, _, cnt, bits) \
-void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, uint ## bits ## _t seed) { \
+#define splitmix(sp) _Generic(sp,\
+    uint32_t* : prng_splitmix32, \
+    uint64_t* : prng_splitmix64  \
+)(sp)
+
+#define DO(name, ist, cnt) \
+void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, ist seed) { \
     for (size_t i = 0; i < cnt; i++) \
-        s->s[i] = prng_splitmix ## bits(&seed); \
+        s->s[i] = splitmix(&seed); \
 }
 PRNG_LIST_OF_NAMES // Seed function definitions
 #undef DO
