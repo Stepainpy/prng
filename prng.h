@@ -22,7 +22,10 @@ DO(xoshiro128ss,  uint32_t, 4) \
 DO(xoshiro128p,   uint32_t, 4) \
 DO(xoshiro256pp,  uint64_t, 4) \
 DO(xoshiro256ss,  uint64_t, 4) \
-DO(xoshiro256p,   uint64_t, 4)
+DO(xoshiro256p,   uint64_t, 4) \
+DO(xoshiro512pp,  uint64_t, 8) \
+DO(xoshiro512ss,  uint64_t, 8) \
+DO(xoshiro512p,   uint64_t, 8)
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn

@@ -197,3 +197,60 @@ uint64_t prng_xoshiro256p_gen(prng_xoshiro256p_state_t* s) {
 
     return res;
 }
+
+uint64_t prng_xoshiro512pp_gen(prng_xoshiro512pp_state_t* s) {
+    const uint64_t res = rol64(s->s[0] + s->s[2], 17) + s->s[2];
+    uint64_t t = s->s[1] << 11;
+
+    s->s[2] ^= s->s[0];
+    s->s[5] ^= s->s[1];
+    s->s[1] ^= s->s[2];
+    s->s[7] ^= s->s[3];
+    s->s[3] ^= s->s[4];
+    s->s[4] ^= s->s[5];
+    s->s[0] ^= s->s[6];
+    s->s[6] ^= s->s[7];
+
+    s->s[6] ^= t;
+    s->s[7] = rol64(s->s[7], 21);
+
+    return res;
+}
+
+uint64_t prng_xoshiro512ss_gen(prng_xoshiro512ss_state_t* s) {
+    const uint64_t res = rol64(s->s[1] * 5, 7) * 9;
+    uint64_t t = s->s[1] << 11;
+
+    s->s[2] ^= s->s[0];
+    s->s[5] ^= s->s[1];
+    s->s[1] ^= s->s[2];
+    s->s[7] ^= s->s[3];
+    s->s[3] ^= s->s[4];
+    s->s[4] ^= s->s[5];
+    s->s[0] ^= s->s[6];
+    s->s[6] ^= s->s[7];
+
+    s->s[6] ^= t;
+    s->s[7] = rol64(s->s[7], 21);
+
+    return res;
+}
+
+uint64_t prng_xoshiro512p_gen(prng_xoshiro512p_state_t* s) {
+    const uint64_t res = s->s[0] + s->s[2];
+    uint64_t t = s->s[1] << 11;
+
+    s->s[2] ^= s->s[0];
+    s->s[5] ^= s->s[1];
+    s->s[1] ^= s->s[2];
+    s->s[7] ^= s->s[3];
+    s->s[3] ^= s->s[4];
+    s->s[4] ^= s->s[5];
+    s->s[0] ^= s->s[6];
+    s->s[6] ^= s->s[7];
+
+    s->s[6] ^= t;
+    s->s[7] = rol64(s->s[7], 21);
+
+    return res;
+}
