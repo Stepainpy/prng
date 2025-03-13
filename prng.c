@@ -1,10 +1,10 @@
 #include "prng.h"
 
-uint64_t prng_splitmix64(uint64_t x) {
-    uint64_t  z   =   x + 0x9e3779b97f4a7c15;
-	z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
-	z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
-	return z ^ (z >> 31);
+uint64_t prng_splitmix64(uint64_t* x) {
+    uint64_t z = (*x += 0x9e3779b97f4a7c15);
+    z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
+    z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
+    return z ^ (z >> 31);
 }
 
 static uint64_t rol64(uint64_t n, int s) {
@@ -17,59 +17,59 @@ static uint64_t rol64(uint64_t n, int s) {
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, uint64_t seed)
 
 SEEDFNH(xorshift32) {
-    s->s = (uint32_t)(prng_splitmix64(seed) >> 32);
+    s->s = (uint32_t)(prng_splitmix64(&seed) >> 32);
 }
 
 SEEDFNH(xorshift64) {
-    s->s = prng_splitmix64(seed);
+    s->s = prng_splitmix64(&seed);
 }
 
 SEEDFNH(xorshift64s) {
-    s->s = prng_splitmix64(seed);
+    s->s = prng_splitmix64(&seed);
 }
 
 SEEDFNH(xorshift128) {
     uint64_t* x = (uint64_t*)(s->s);
-    x[0] = prng_splitmix64(seed);
-    x[1] = prng_splitmix64(x[0]);
+    x[0] = prng_splitmix64(&seed);
+    x[1] = prng_splitmix64(&seed);
 }
 
 SEEDFNH(xorshift128p) {
-    s->s[0] = prng_splitmix64(seed);
-    s->s[1] = prng_splitmix64(s->s[0]);
+    s->s[0] = prng_splitmix64(&seed);
+    s->s[1] = prng_splitmix64(&seed);
 }
 
 SEEDFNH(xorshiftr128p) {
-    s->s[0] = prng_splitmix64(seed);
-    s->s[1] = prng_splitmix64(s->s[0]);
+    s->s[0] = prng_splitmix64(&seed);
+    s->s[1] = prng_splitmix64(&seed);
 }
 
 SEEDFNH(xorwow) {
     uint64_t* x = (uint64_t*)(s->s);
-    x[0] = prng_splitmix64(seed);
-    x[1] = prng_splitmix64(x[0]);
-    x[2] = prng_splitmix64(x[1]);
+    x[0] = prng_splitmix64(&seed);
+    x[1] = prng_splitmix64(&seed);
+    x[2] = prng_splitmix64(&seed);
 }
 
 SEEDFNH(xoshiro256pp) {
-    s->s[0] = prng_splitmix64(seed);
-    s->s[1] = prng_splitmix64(s->s[0]);
-    s->s[2] = prng_splitmix64(s->s[1]);
-    s->s[3] = prng_splitmix64(s->s[2]);
+    s->s[0] = prng_splitmix64(&seed);
+    s->s[1] = prng_splitmix64(&seed);
+    s->s[2] = prng_splitmix64(&seed);
+    s->s[3] = prng_splitmix64(&seed);
 }
 
 SEEDFNH(xoshiro256ss) {
-    s->s[0] = prng_splitmix64(seed);
-    s->s[1] = prng_splitmix64(s->s[0]);
-    s->s[2] = prng_splitmix64(s->s[1]);
-    s->s[3] = prng_splitmix64(s->s[2]);
+    s->s[0] = prng_splitmix64(&seed);
+    s->s[1] = prng_splitmix64(&seed);
+    s->s[2] = prng_splitmix64(&seed);
+    s->s[3] = prng_splitmix64(&seed);
 }
 
 SEEDFNH(xoshiro256p) {
-    s->s[0] = prng_splitmix64(seed);
-    s->s[1] = prng_splitmix64(s->s[0]);
-    s->s[2] = prng_splitmix64(s->s[1]);
-    s->s[3] = prng_splitmix64(s->s[2]);
+    s->s[0] = prng_splitmix64(&seed);
+    s->s[1] = prng_splitmix64(&seed);
+    s->s[2] = prng_splitmix64(&seed);
+    s->s[3] = prng_splitmix64(&seed);
 }
 
 /* ================================================================ */
