@@ -7,6 +7,10 @@ uint64_t prng_splitmix64(uint64_t* x) {
     return z ^ (z >> 31);
 }
 
+static uint32_t rol32(uint32_t n, int s) {
+    return (n << s) | (n >> (32 - s));
+}
+
 static uint64_t rol64(uint64_t n, int s) {
     return (n << s) | (n >> (64 - s));
 }
@@ -49,6 +53,24 @@ SEEDFNH(xorwow) {
     x[0] = prng_splitmix64(&seed);
     x[1] = prng_splitmix64(&seed);
     x[2] = prng_splitmix64(&seed);
+}
+
+SEEDFNH(xoshiro128pp) {
+    uint64_t* x = (uint64_t*)(s->s);
+    x[0] = prng_splitmix64(&seed);
+    x[1] = prng_splitmix64(&seed);
+}
+
+SEEDFNH(xoshiro128ss) {
+    uint64_t* x = (uint64_t*)(s->s);
+    x[0] = prng_splitmix64(&seed);
+    x[1] = prng_splitmix64(&seed);
+}
+
+SEEDFNH(xoshiro128p) {
+    uint64_t* x = (uint64_t*)(s->s);
+    x[0] = prng_splitmix64(&seed);
+    x[1] = prng_splitmix64(&seed);
 }
 
 SEEDFNH(xoshiro256pp) {
@@ -145,6 +167,51 @@ uint32_t prng_xorwow_gen(prng_xorwow_state_t* st) {
     st->s[0] = t;
     st->s[5] += 362437;
     return t + st->s[5];
+}
+
+uint32_t prng_xoshiro128pp_gen(prng_xoshiro128pp_state_t* s) {
+    const uint32_t res = rol32(s->s[0] + s->s[3], 7) + s->s[0];
+    uint32_t t = s->s[1] << 9;
+
+    s->s[2] ^= s->s[0];
+    s->s[3] ^= s->s[1];
+    s->s[1] ^= s->s[2];
+    s->s[0] ^= s->s[3];
+
+    s->s[2] ^= t;
+    s->s[3] = rol64(s->s[3], 11);
+
+    return res;
+}
+
+uint32_t prng_xoshiro128ss_gen(prng_xoshiro128ss_state_t* s) {
+    const uint32_t res = rol32(s->s[1] * 5, 7) * 9;
+    uint32_t t = s->s[1] << 9;
+
+    s->s[2] ^= s->s[0];
+    s->s[3] ^= s->s[1];
+    s->s[1] ^= s->s[2];
+    s->s[0] ^= s->s[3];
+
+    s->s[2] ^= t;
+    s->s[3] = rol64(s->s[3], 11);
+
+    return res;
+}
+
+uint32_t prng_xoshiro128p_gen(prng_xoshiro128p_state_t* s) {
+    const uint32_t res = s->s[0] + s->s[3];
+    uint32_t t = s->s[1] << 9;
+
+    s->s[2] ^= s->s[0];
+    s->s[3] ^= s->s[1];
+    s->s[1] ^= s->s[2];
+    s->s[0] ^= s->s[3];
+
+    s->s[2] ^= t;
+    s->s[3] = rol64(s->s[3], 11);
+
+    return res;
 }
 
 uint64_t prng_xoshiro256pp_gen(prng_xoshiro256pp_state_t* s) {

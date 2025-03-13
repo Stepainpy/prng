@@ -12,6 +12,9 @@ FN(xorshift128,   uint32_t, uint32_t s[4];) \
 FN(xorshift128p,  uint64_t, uint64_t s[2];) \
 FN(xorshiftr128p, uint64_t, uint64_t s[2];) \
 FN(xorwow,        uint32_t, uint32_t s[6];) \
+FN(xoshiro128pp,  uint32_t, uint32_t s[4];) \
+FN(xoshiro128ss,  uint32_t, uint32_t s[4];) \
+FN(xoshiro128p,   uint32_t, uint32_t s[4];) \
 FN(xoshiro256pp,  uint64_t, uint64_t s[4];) \
 FN(xoshiro256ss,  uint64_t, uint64_t s[4];) \
 FN(xoshiro256p,   uint64_t, uint64_t s[4];)
