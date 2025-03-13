@@ -1,5 +1,14 @@
 #include "prng.h"
 
+uint32_t prng_splitmix32(uint64_t* x) {
+    uint32_t z = (
+        *x += 0x9e3779b9,
+        *x &= UINT32_MAX);
+    z = (z ^ (z >> 15)) * 0x85ebca6b;
+    z = (z ^ (z >> 13)) * 0xc2b2ae35;
+    return z ^ (z >> 16);
+}
+
 uint64_t prng_splitmix64(uint64_t* x) {
     uint64_t z = (*x += 0x9e3779b97f4a7c15);
     z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
@@ -21,7 +30,7 @@ static uint64_t rol64(uint64_t n, int s) {
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, uint64_t seed)
 
 SEEDFNH(xorshift32) {
-    s->s = (uint32_t)(prng_splitmix64(&seed) >> 32);
+    s->s = prng_splitmix32(&seed);
 }
 
 SEEDFNH(xorshift64) {
@@ -33,9 +42,10 @@ SEEDFNH(xorshift64s) {
 }
 
 SEEDFNH(xorshift128) {
-    uint64_t* x = (uint64_t*)(s->s);
-    x[0] = prng_splitmix64(&seed);
-    x[1] = prng_splitmix64(&seed);
+    s->s[0] = prng_splitmix32(&seed);
+    s->s[1] = prng_splitmix32(&seed);
+    s->s[2] = prng_splitmix32(&seed);
+    s->s[3] = prng_splitmix32(&seed);
 }
 
 SEEDFNH(xorshift128p) {
@@ -49,28 +59,33 @@ SEEDFNH(xorshiftr128p) {
 }
 
 SEEDFNH(xorwow) {
-    uint64_t* x = (uint64_t*)(s->s);
-    x[0] = prng_splitmix64(&seed);
-    x[1] = prng_splitmix64(&seed);
-    x[2] = prng_splitmix64(&seed);
+    s->s[0] = prng_splitmix32(&seed);
+    s->s[1] = prng_splitmix32(&seed);
+    s->s[2] = prng_splitmix32(&seed);
+    s->s[3] = prng_splitmix32(&seed);
+    s->s[4] = prng_splitmix32(&seed);
+    s->s[5] = prng_splitmix32(&seed);
 }
 
 SEEDFNH(xoshiro128pp) {
-    uint64_t* x = (uint64_t*)(s->s);
-    x[0] = prng_splitmix64(&seed);
-    x[1] = prng_splitmix64(&seed);
+    s->s[0] = prng_splitmix32(&seed);
+    s->s[1] = prng_splitmix32(&seed);
+    s->s[2] = prng_splitmix32(&seed);
+    s->s[3] = prng_splitmix32(&seed);
 }
 
 SEEDFNH(xoshiro128ss) {
-    uint64_t* x = (uint64_t*)(s->s);
-    x[0] = prng_splitmix64(&seed);
-    x[1] = prng_splitmix64(&seed);
+    s->s[0] = prng_splitmix32(&seed);
+    s->s[1] = prng_splitmix32(&seed);
+    s->s[2] = prng_splitmix32(&seed);
+    s->s[3] = prng_splitmix32(&seed);
 }
 
 SEEDFNH(xoshiro128p) {
-    uint64_t* x = (uint64_t*)(s->s);
-    x[0] = prng_splitmix64(&seed);
-    x[1] = prng_splitmix64(&seed);
+    s->s[0] = prng_splitmix32(&seed);
+    s->s[1] = prng_splitmix32(&seed);
+    s->s[2] = prng_splitmix32(&seed);
+    s->s[3] = prng_splitmix32(&seed);
 }
 
 SEEDFNH(xoshiro256pp) {

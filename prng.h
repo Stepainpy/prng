@@ -37,6 +37,7 @@ void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* state, uint64_t seed);
 PRNG_LIST_OF_NAMES(DO) // Seed functions
 #undef DO
 
+uint32_t prng_splitmix32(uint64_t* x);
 uint64_t prng_splitmix64(uint64_t* x);
 
 #endif // PRNG_H
