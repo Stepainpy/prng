@@ -8,7 +8,7 @@ OBJ = $(patsubst %.c,%.o,$(SRC))
 all: $(OBJ)
 	$(CC) -o tp $(OBJ) $(CFLAGS)
 
-%.o: %.c prng.h
+%.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
