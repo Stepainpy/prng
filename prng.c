@@ -43,6 +43,18 @@ void prng_mt19937_seed(prng_mt19937_state_t* s, uint32_t seed) {
     s->p = 624;
 }
 
+void prng_mt19937_64_seed(prng_mt19937_64_state_t* s, uint64_t seed) {
+    s->s[0] = seed;
+    for (size_t i = 1; i < 312; i++) {
+        uint64_t x = s->s[i - 1];
+        x ^= x >> 62;
+        x *= 0x5851F42D4C957F2D;
+        x += i;
+        s->s[i] = x;
+    }
+    s->p = 312;
+}
+
 uint32_t prng_splitmix32(uint32_t* x) {
     uint32_t z = (*x += 0x9e3779b9);
     z = (z ^ (z >> 15)) * 0x85ebca6b;
@@ -383,6 +395,45 @@ uint32_t prng_mt19937_gen(prng_mt19937_state_t* s) {
     z ^= (z <<  7) & 0x9d2c5680;
     z ^= (z << 15) & 0xefc60000;
     z ^= (z >> 18);
+
+    return z;
+}
+
+static void mt19937_64_step(prng_mt19937_64_state_t* s) {
+    const uint64_t high_bit = ~UINT64_C(0) << 31;
+    const uint64_t low_bits = ~high_bit;
+
+    for (size_t k = 0; k < 312 - 156; k++) {
+        uint64_t y = (s->s[k] & high_bit) | (s->s[k + 1] & low_bits);
+        s->s[k] = s->s[k + 156] ^ (y >> 1) ^ (y & 1 ? 0xb5026f5aa96619e9 : 0);
+    }
+
+    for (size_t k = 312 - 156; k < 311; k++) {
+        uint64_t y = (s->s[k] & high_bit) | (s->s[k + 1] & low_bits);
+        s->s[k] = s->s[k + 156 - 312] ^ (y >> 1) ^ (y & 1 ? 0xb5026f5aa96619e9 : 0);
+    }
+
+    uint64_t y = (s->s[311] & high_bit) | (s->s[0] & low_bits);
+    s->s[311] = s->s[155] ^ (y >> 1) ^ (y & 1 ? 0xb5026f5aa96619e9 : 0);
+    s->p = 0;
+}
+
+void prng_mt19937_64_discard(prng_mt19937_64_state_t* s, size_t z) {
+    while (z > 312 - s->p) {
+        z -= 312 - s->p;
+        mt19937_64_step(s);
+    } s->p += z;
+}
+
+uint64_t prng_mt19937_64_gen(prng_mt19937_64_state_t* s) {
+    if (s->p >= 312)
+        mt19937_64_step(s);
+    
+    uint64_t z = s->s[s->p++];
+    z ^= (z >> 29) & 0x5555555555555555;
+    z ^= (z << 17) & 0x71d67fffeda60000;
+    z ^= (z << 37) & 0xfff7eee000000000;
+    z ^= (z >> 43);
 
     return z;
 }
