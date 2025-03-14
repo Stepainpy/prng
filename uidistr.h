@@ -8,6 +8,10 @@
  * Generator output in range [0, 2^w), where w is 32 or 64
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct uidistr32_t {
     uint32_t (*gen)(void*);
     void* state;
@@ -24,6 +28,10 @@ typedef struct uidistr64_t {
 
 uint32_t uidistr32_gen(uidistr32_t* distr);
 uint64_t uidistr64_gen(uidistr64_t* distr);
+
+#ifdef __cplusplus
+}
+#endif
 
 #define UIDISTR_TO_VOID_CONTEXT(fn, ret, argt) \
 ret fn ## _void_ctx(void* ctx) { return fn((argt*)ctx); }

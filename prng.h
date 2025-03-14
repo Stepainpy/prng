@@ -49,6 +49,10 @@ DO(mt19937_64, uint64_t, uint64_t s[312]; size_t p;)
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define DO(name, ist, cnt) \
 typedef struct PRNGN_STATE(name) { ist s[cnt]; } PRNGN_STATE(name);
 PRNG_LIST_OF_NAMES // State structures
@@ -75,6 +79,10 @@ uint32_t prng_splitmix32(uint32_t* x);
 uint64_t prng_splitmix64(uint64_t* x);
 void prng_mt19937_discard(prng_mt19937_state_t* state, size_t skip);
 void prng_mt19937_64_discard(prng_mt19937_64_state_t* state, size_t skip);
+
+#ifdef __cplusplus
+}
+#endif
 
 #ifndef PRNG_DEFAULT
 #define PRNG_DEFAULT xoshiro256ss
