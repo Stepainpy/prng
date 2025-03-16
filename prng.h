@@ -1,6 +1,7 @@
 /* Taken from:
 https://en.wikipedia.org/wiki/Xorshift
 https://prng.di.unimi.it/
+https://www.pcg-random.org/
 */
 #ifndef PRNG_H
 #define PRNG_H
@@ -47,7 +48,8 @@ DO(xoroshiro1024pp, uint64_t, uint64_t s[16]; size_t p;) \
 DO(xoroshiro1024ss, uint64_t, uint64_t s[16]; size_t p;) \
 DO(xoroshiro1024s,  uint64_t, uint64_t s[16]; size_t p;) \
 DO(mt19937,    uint32_t, uint32_t s[624]; size_t p;) \
-DO(mt19937_64, uint64_t, uint64_t s[312]; size_t p;)
+DO(mt19937_64, uint64_t, uint64_t s[312]; size_t p;) \
+DO(pcg32, uint32_t, uint64_t state; uint64_t inc;)
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn

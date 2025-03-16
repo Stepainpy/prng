@@ -11,6 +11,7 @@ Collection of pseudorandom number generators. And including the uniform integer 
 - `xoroshiro64(*/**)`
 - `xoshiro128(+/++/**)`
 - `mt19937`
+- `pcg32`
 - `splitmix32`
 
 64 bits:

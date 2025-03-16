@@ -55,6 +55,12 @@ void prng_mt19937_64_seed(prng_mt19937_64_state_t* s, uint64_t seed) {
     s->p = 312;
 }
 
+void prng_pcg32_seed(prng_pcg32_state_t* s, uint32_t seed) {
+    uint64_t seed64 = (uint64_t)prng_splitmix32(&seed) << 32 | prng_splitmix32(&seed);
+    s->state = prng_splitmix64(&seed64);
+    s->inc = prng_splitmix64(&seed64) << 1 | 1;
+}
+
 uint32_t prng_splitmix32(uint32_t* x) {
     uint32_t z = (*x += 0x9e3779b9);
     z = (z ^ (z >> 15)) * 0x85ebca6b;
@@ -472,4 +478,12 @@ uint64_t prng_mt19937_64_gen(prng_mt19937_64_state_t* s) {
     z ^= (z >> 43);
 
     return z;
+}
+
+uint32_t prng_pcg32_gen(prng_pcg32_state_t* s) {
+    uint64_t olds = s->state;
+    s->state = olds * 6364136223846793005ull + s->inc;
+    uint32_t xsed = ((olds >> 18) ^ olds) >> 27;
+    uint32_t rot = olds >> 59;
+    return (xsed >> rot) | (xsed << ((-rot) & 31));
 }
