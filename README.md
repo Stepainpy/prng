@@ -18,6 +18,7 @@ Collection of pseudorandom number generators. And including the uniform integer 
 - `xorshift[r]128+`
 - `xoshiro256(+/++/**)`
 - `xoshiro512(+/++/**)`
+- `xoroshiro128(+/++/**)`
 - `xoroshiro1024(++/*/**)`
 - `mt19937-64`
 - `splitmix64`

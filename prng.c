@@ -174,6 +174,42 @@ uint32_t prng_xoroshiro64ss_gen(prng_xoroshiro64ss_state_t* s) {
     return res;
 }
 
+uint64_t prng_xoroshiro128pp_gen(prng_xoroshiro128pp_state_t* s) {
+    uint64_t s0 = s->s[0];
+    uint64_t s1 = s->s[1];
+    const uint64_t res = rol64(s0 + s1, 17) + s0;
+
+    s1 ^= s0;
+    s->s[0] = rol64(s0, 49) ^ s1 ^ (s1 << 21);
+    s->s[1] = rol64(s1, 28);
+
+    return res;
+}
+
+uint64_t prng_xoroshiro128ss_gen(prng_xoroshiro128ss_state_t* s) {
+    uint64_t s0 = s->s[0];
+    uint64_t s1 = s->s[1];
+    const uint64_t res = rol64(s0 * 5, 7) * 9;
+
+    s1 ^= s0;
+    s->s[0] = rol64(s0, 24) ^ s1 ^ (s1 << 16);
+    s->s[1] = rol64(s1, 37);
+
+    return res;
+}
+
+uint64_t prng_xoroshiro128p_gen(prng_xoroshiro128p_state_t* s) {
+    uint64_t s0 = s->s[0];
+    uint64_t s1 = s->s[1];
+    const uint64_t res = s0 + s1;
+
+    s1 ^= s0;
+    s->s[0] = rol64(s0, 24) ^ s1 ^ (s1 << 16);
+    s->s[1] = rol64(s1, 37);
+
+    return res;
+}
+
 uint32_t prng_xoshiro128pp_gen(prng_xoshiro128pp_state_t* s) {
     const uint32_t res = rol32(s->s[0] + s->s[3], 7) + s->s[0];
     uint32_t t = s->s[1] << 9;
