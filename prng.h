@@ -14,27 +14,27 @@ https://prng.di.unimi.it/
  */
 
 #define PRNG_LIST_OF_NAMES \
-DO(xorshift32,    uint32_t, 1) \
-DO(xorshift64,    uint64_t, 1) \
-DO(xorshift64s,   uint64_t, 1) \
-DO(xorshift128,   uint32_t, 4) \
-DO(xorshift128p,  uint64_t, 2) \
-DO(xorshiftr128p, uint64_t, 2) \
-DO(xorwow,        uint32_t, 6) \
-DO(xoroshiro64s,  uint32_t, 2) \
-DO(xoroshiro64ss, uint32_t, 2) \
+DO(xorshift32,     uint32_t, 1) \
+DO(xorshift64,     uint64_t, 1) \
+DO(xorshift64s,    uint64_t, 1) \
+DO(xorshift128,    uint32_t, 4) \
+DO(xorshift128p,   uint64_t, 2) \
+DO(xorshiftr128p,  uint64_t, 2) \
+DO(xorwow,         uint32_t, 6) \
+DO(xoroshiro64s,   uint32_t, 2) \
+DO(xoroshiro64ss,  uint32_t, 2) \
 DO(xoroshiro128pp, uint64_t, 2) \
 DO(xoroshiro128ss, uint64_t, 2) \
 DO(xoroshiro128p,  uint64_t, 2) \
-DO(xoshiro128pp,  uint32_t, 4) \
-DO(xoshiro128ss,  uint32_t, 4) \
-DO(xoshiro128p,   uint32_t, 4) \
-DO(xoshiro256pp,  uint64_t, 4) \
-DO(xoshiro256ss,  uint64_t, 4) \
-DO(xoshiro256p,   uint64_t, 4) \
-DO(xoshiro512pp,  uint64_t, 8) \
-DO(xoshiro512ss,  uint64_t, 8) \
-DO(xoshiro512p,   uint64_t, 8)
+DO(xoshiro128pp,   uint32_t, 4) \
+DO(xoshiro128ss,   uint32_t, 4) \
+DO(xoshiro128p,    uint32_t, 4) \
+DO(xoshiro256pp,   uint64_t, 4) \
+DO(xoshiro256ss,   uint64_t, 4) \
+DO(xoshiro256p,    uint64_t, 4) \
+DO(xoshiro512pp,   uint64_t, 8) \
+DO(xoshiro512ss,   uint64_t, 8) \
+DO(xoshiro512p,    uint64_t, 8)
 
 /* DO:
  * basename
