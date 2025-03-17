@@ -5,6 +5,10 @@
     uint64_t* : prng_splitmix64  \
 )(sp)
 
+#if PRNG_HAS_INT128
+#define uint128_lit(h, l) ((prng_uint128_t)(h) << 64 | (l))
+#endif
+
 #define DO(name, ist, cnt) \
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, ist seed) { \
     for (size_t i = 0; i < cnt; i++) \
@@ -61,6 +65,14 @@ void prng_pcg32_seed(prng_pcg32_state_t* s, uint32_t seed) {
     s->inc = prng_splitmix64(&seed64) << 1 | 1;
 }
 
+#if PRNG_HAS_INT128
+void prng_pcg64_seed(prng_pcg64_state_t* s, uint64_t seed) {
+    s->state = uint128_lit(prng_splitmix64(&seed), prng_splitmix64(&seed));
+    s->inc   = uint128_lit(prng_splitmix64(&seed), prng_splitmix64(&seed));
+    s->inc |= 1;
+}
+#endif
+
 uint32_t prng_splitmix32(uint32_t* x) {
     uint32_t z = (*x += 0x9e3779b9);
     z = (z ^ (z >> 15)) * 0x85ebca6b;
@@ -79,8 +91,16 @@ static uint32_t rol32(uint32_t n, int s) {
     return (n << s) | (n >> (32 - s));
 }
 
+static uint32_t ror32(uint32_t n, int s) {
+    return (n >> s) | (n << (32 - s));
+}
+
 static uint64_t rol64(uint64_t n, int s) {
     return (n << s) | (n >> (64 - s));
+}
+
+static uint64_t ror64(uint64_t n, int s) {
+    return (n >> s) | (n << (64 - s));
 }
 
 uint32_t prng_xorshift32_gen(prng_xorshift32_state_t* s) {
@@ -483,7 +503,14 @@ uint64_t prng_mt19937_64_gen(prng_mt19937_64_state_t* s) {
 uint32_t prng_pcg32_gen(prng_pcg32_state_t* s) {
     uint64_t olds = s->state;
     s->state = olds * 6364136223846793005ull + s->inc;
-    uint32_t xsed = ((olds >> 18) ^ olds) >> 27;
-    uint32_t rot = olds >> 59;
-    return (xsed >> rot) | (xsed << ((-rot) & 31));
+    return ror32(((olds >> 18) ^ olds) >> 27, olds >> 59);
 }
+
+#if PRNG_HAS_INT128
+uint64_t prng_pcg64_gen(prng_pcg64_state_t* s) {
+    s->state = s->state * uint128_lit(
+        2549297995355413924ull, 4865540595714422341ull) + s->inc;
+    return ror64(((uint64_t)(s->state >> 64)) ^ (uint64_t)s->state,
+        s->state >> 122);
+}
+#endif

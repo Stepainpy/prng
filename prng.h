@@ -8,6 +8,18 @@ https://www.pcg-random.org/
 
 #include <stdint.h>
 
+#ifdef __SIZEOF_INT128__
+#define PRNG_HAS_INT128 1
+typedef __uint128_t prng_uint128_t;
+#else
+#define PRNG_HAS_INT128 0
+#endif
+
+#define PRNG_IF0(x)
+#define PRNG_IF1(x) x
+#define PRNG_IFc(c, x) PRNG_IF ## c(x)
+#define PRNG_IF(c, x) PRNG_IFc(c, x)
+
 /* DO:
  * basename
  * state/return type
@@ -49,7 +61,8 @@ DO(xoroshiro1024ss, uint64_t, uint64_t s[16]; size_t p;) \
 DO(xoroshiro1024s,  uint64_t, uint64_t s[16]; size_t p;) \
 DO(mt19937,    uint32_t, uint32_t s[624]; size_t p;) \
 DO(mt19937_64, uint64_t, uint64_t s[312]; size_t p;) \
-DO(pcg32, uint32_t, uint64_t state; uint64_t inc;)
+DO(pcg32, uint32_t, uint64_t state; uint64_t inc;) \
+PRNG_IF(PRNG_HAS_INT128, DO(pcg64, uint64_t, prng_uint128_t state; prng_uint128_t inc;))
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn
