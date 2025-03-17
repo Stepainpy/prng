@@ -1,7 +1,15 @@
 #include <stdio.h>
 #include "prng.h"
 
-#if 0
+#if 1
+int main(void) {
+    prng_state_t s = {0};
+    prng_seed(&s, 5489);
+
+    for (size_t i = 0; i < 10; i++)
+        printf("%016llx\n", prng_gen(&s));
+}
+#else
 #include "uidistr.h"
 
 UIDISTR_TO_VOID_CONTEXT(
@@ -23,13 +31,5 @@ int main(void) {
     putchar('\n');
 
     return 0;
-}
-#else
-int main(void) {
-    prng_state_t s = {0};
-    prng_seed(&s, 5489);
-
-    for (size_t i = 0; i < 10; i++)
-        printf("%016llx\n", prng_gen(&s));
 }
 #endif
