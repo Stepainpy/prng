@@ -102,15 +102,15 @@ void prng_mt19937_64_discard(prng_mt19937_64_state_t* state, size_t skip);
 }
 #endif
 
-#ifndef PRNG_DEFAULT
-#define PRNG_DEFAULT xoshiro256ss
+#ifndef PRNG_ENGINE
+#define PRNG_ENGINE xoshiro256ss
 #endif
 
 #define PRNGN_STATE_EXP(bn)    PRNGN_STATE(bn)
 #define PRNGN_FUNC_EXP(bn, fn) PRNGN_FUNC(bn, fn)
 
-#define prng_state_t PRNGN_STATE_EXP(PRNG_DEFAULT)
-#define prng_gen  PRNGN_FUNC_EXP(PRNG_DEFAULT, gen)
-#define prng_seed PRNGN_FUNC_EXP(PRNG_DEFAULT, seed)
+#define prng_state_t PRNGN_STATE_EXP(PRNG_ENGINE)
+#define prng_gen  PRNGN_FUNC_EXP(PRNG_ENGINE, gen)
+#define prng_seed PRNGN_FUNC_EXP(PRNG_ENGINE, seed)
 
 #endif // PRNG_H
