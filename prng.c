@@ -520,9 +520,9 @@ uint64_t prng_pcg64_gen(prng_pcg64_state_t* s) {
 #endif
 
 /* LFSR taps:
-https://en.wikipedia.org/wiki/Linear-feedback_shift_register
-https://docs.amd.com/v/u/en-US/xapp052 p.5
-*/
+ * https://en.wikipedia.org/wiki/Linear-feedback_shift_register
+ * https://docs.amd.com/v/u/en-US/xapp052 p.5
+ */
 
 char prng_lfsr32_gen_bit(prng_lfsr32_state_t* s) {
     // taps: 32, 22, 2, 1

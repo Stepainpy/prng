@@ -1,8 +1,8 @@
 /* Taken from:
-https://en.wikipedia.org/wiki/Xorshift
-https://prng.di.unimi.it/
-https://www.pcg-random.org/
-*/
+ * https://en.wikipedia.org/wiki/Xorshift
+ * https://prng.di.unimi.it/
+ * https://www.pcg-random.org/
+ */
 #ifndef PRNG_H
 #define PRNG_H
 
@@ -99,9 +99,7 @@ PRNG_LIST_OF_UNUSUAL_NAMES
 uint32_t prng_splitmix32(uint32_t* x);
 uint64_t prng_splitmix64(uint64_t* x);
 
-/*
- * Extra functions
- */
+/* Extra functions */
 
 void prng_mt19937_discard(prng_mt19937_state_t* state, size_t skip);
 void prng_mt19937_64_discard(prng_mt19937_64_state_t* state, size_t skip);
