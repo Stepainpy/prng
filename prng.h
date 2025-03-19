@@ -64,6 +64,7 @@ DO(xoroshiro1024s,  uint64_t, uint64_t s[16]; size_t p;) \
 DO(mt19937,    uint32_t, uint32_t s[624]; size_t p;) \
 DO(mt19937_64, uint64_t, uint64_t s[312]; size_t p;) \
 DO(pcg32, uint32_t, uint64_t state; uint64_t inc;) \
+PRNG_IF(PRNG_HAS_INT128, DO(lfsr128, uint64_t, prng_uint128_t s;)) \
 PRNG_IF(PRNG_HAS_INT128, DO(pcg64, uint64_t, prng_uint128_t state; prng_uint128_t inc;))
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t

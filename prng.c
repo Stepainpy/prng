@@ -71,6 +71,10 @@ void prng_pcg64_seed(prng_pcg64_state_t* s, uint64_t seed) {
     s->inc   = uint128_lit(prng_splitmix64(&seed), prng_splitmix64(&seed));
     s->inc |= 1;
 }
+
+void prng_lfsr128_seed(prng_lfsr128_state_t* s, uint64_t seed) {
+    s->s = uint128_lit(prng_splitmix64(&seed), prng_splitmix64(&seed));
+}
 #endif
 
 uint32_t prng_splitmix32(uint32_t* x) {
@@ -543,5 +547,18 @@ uint64_t prng_lfsr64_gen(prng_lfsr64_state_t* s) {
         s0 = (bit << 63) | (s0 >> 1);
     }
     s->s[0] = s0;
+    return res;
+}
+
+uint64_t prng_lfsr128_gen(prng_lfsr128_state_t* s) {
+    prng_uint128_t s0 = s->s;
+    uint64_t res = 0;
+    for (size_t i = 0; i < 64; i++) {
+        // taps: 128, 126, 101, 99
+        prng_uint128_t bit = (s0 ^ (s0 >> 2) ^ (s0 >> 27) ^ (s0 >> 29)) & 1;
+        res = (res << 1) | bit;
+        s0 = (bit << 127) | (s0 >> 1);
+    }
+    s->s = s0;
     return res;
 }

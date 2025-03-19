@@ -25,6 +25,7 @@ Collection of pseudorandom number generators. And including the uniform integer 
 - `mt19937-64`
 - `pcg64`
 - `lfsr64`
+- `lfsr128`
 - `splitmix64`
 
 All generators output number in range $[0; 2^w)$, where $w$ is output bit width.
