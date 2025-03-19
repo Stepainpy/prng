@@ -524,41 +524,54 @@ https://en.wikipedia.org/wiki/Linear-feedback_shift_register
 https://docs.amd.com/v/u/en-US/xapp052 p.5
 */
 
+char prng_lfsr32_gen_bit(prng_lfsr32_state_t* s) {
+    // taps: 32, 22, 2, 1
+    char res = s->s[0] & 1;
+    uint32_t bit = (s->s[0] ^ (s->s[0] >> 10) ^
+        (s->s[0] >> 30) ^ (s->s[0] >> 31)) & 1;
+    s->s[0] = (bit << 31) | (s->s[0] >> 1);
+    return res;
+}
+
+char prng_lfsr64_gen_bit(prng_lfsr64_state_t* s) {
+    // taps: 64, 63, 61, 60
+    char res = s->s[0] & 1;
+    uint64_t bit = (s->s[0] ^ (s->s[0] >> 1) ^
+        (s->s[0] >> 3) ^ (s->s[0] >> 4)) & 1;
+    s->s[0] = (bit << 63) | (s->s[0] >> 1);
+    return res;
+}
+
+#if PRNG_HAS_INT128
+char prng_lfsr128_gen_bit(prng_lfsr128_state_t* s) {
+    // taps: 128, 126, 101, 99
+    char res = s->s & 1;
+    prng_uint128_t bit = (s->s ^ (s->s >> 2) ^
+        (s->s >> 27) ^ (s->s >> 29)) & 1;
+    s->s = (bit << 127) | (s->s >> 1);
+    return res;
+}
+#endif
+
 uint32_t prng_lfsr32_gen(prng_lfsr32_state_t* s) {
-    uint32_t s0 = s->s[0];
     uint32_t res = 0;
-    for (size_t i = 0; i < 32; i++) {
-        // taps: 32, 22, 2, 1
-        uint32_t bit = (s0 ^ (s0 >> 10) ^ (s0 >> 30) ^ (s0 >> 31)) & 1;
-        res = (res << 1) | bit;
-        s0 = (bit << 31) | (s0 >> 1);
-    }
-    s->s[0] = s0;
+    for (size_t i = 0; i < 32; i++)
+        res = (res << 1) | prng_lfsr32_gen_bit(s);
     return res;
 }
 
 uint64_t prng_lfsr64_gen(prng_lfsr64_state_t* s) {
-    uint64_t s0 = s->s[0];
     uint64_t res = 0;
-    for (size_t i = 0; i < 64; i++) {
-        // taps: 64, 63, 61, 60
-        uint64_t bit = (s0 ^ (s0 >> 1) ^ (s0 >> 3) ^ (s0 >> 4)) & 1;
-        res = (res << 1) | bit;
-        s0 = (bit << 63) | (s0 >> 1);
-    }
-    s->s[0] = s0;
+    for (size_t i = 0; i < 64; i++)
+        res = (res << 1) | prng_lfsr64_gen_bit(s);
     return res;
 }
 
+#if PRNG_HAS_INT128
 uint64_t prng_lfsr128_gen(prng_lfsr128_state_t* s) {
-    prng_uint128_t s0 = s->s;
     uint64_t res = 0;
-    for (size_t i = 0; i < 64; i++) {
-        // taps: 128, 126, 101, 99
-        prng_uint128_t bit = (s0 ^ (s0 >> 2) ^ (s0 >> 27) ^ (s0 >> 29)) & 1;
-        res = (res << 1) | bit;
-        s0 = (bit << 127) | (s0 >> 1);
-    }
-    s->s = s0;
+    for (size_t i = 0; i < 64; i++)
+        res = (res << 1) | prng_lfsr128_gen_bit(s);
     return res;
 }
+#endif
