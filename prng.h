@@ -103,9 +103,9 @@ uint64_t prng_splitmix64(uint64_t* x);
 
 void prng_mt19937_discard(prng_mt19937_state_t* state, size_t skip);
 void prng_mt19937_64_discard(prng_mt19937_64_state_t* state, size_t skip);
-char prng_lfsr32_gen_bit(prng_lfsr32_state_t* state);
-char prng_lfsr64_gen_bit(prng_lfsr64_state_t* state);
-PRNG_IF(PRNG_HAS_INT128, char prng_lfsr128_gen_bit(prng_lfsr128_state_t* state);)
+uint8_t prng_lfsr32_gen_bit(prng_lfsr32_state_t* state);
+uint8_t prng_lfsr64_gen_bit(prng_lfsr64_state_t* state);
+PRNG_IF(PRNG_HAS_INT128, uint8_t prng_lfsr128_gen_bit(prng_lfsr128_state_t* state);)
 
 #ifdef __cplusplus
 }

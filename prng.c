@@ -524,18 +524,18 @@ uint64_t prng_pcg64_gen(prng_pcg64_state_t* s) {
  * https://docs.amd.com/v/u/en-US/xapp052 p.5
  */
 
-char prng_lfsr32_gen_bit(prng_lfsr32_state_t* s) {
+uint8_t prng_lfsr32_gen_bit(prng_lfsr32_state_t* s) {
     // taps: 32, 22, 2, 1
-    char res = s->s[0] & 1;
+    uint8_t res = s->s[0] & 1;
     uint32_t bit = (s->s[0] ^ (s->s[0] >> 10) ^
         (s->s[0] >> 30) ^ (s->s[0] >> 31)) & 1;
     s->s[0] = (bit << 31) | (s->s[0] >> 1);
     return res;
 }
 
-char prng_lfsr64_gen_bit(prng_lfsr64_state_t* s) {
+uint8_t prng_lfsr64_gen_bit(prng_lfsr64_state_t* s) {
     // taps: 64, 63, 61, 60
-    char res = s->s[0] & 1;
+    uint8_t res = s->s[0] & 1;
     uint64_t bit = (s->s[0] ^ (s->s[0] >> 1) ^
         (s->s[0] >> 3) ^ (s->s[0] >> 4)) & 1;
     s->s[0] = (bit << 63) | (s->s[0] >> 1);
@@ -543,9 +543,9 @@ char prng_lfsr64_gen_bit(prng_lfsr64_state_t* s) {
 }
 
 #if PRNG_HAS_INT128
-char prng_lfsr128_gen_bit(prng_lfsr128_state_t* s) {
+uint8_t prng_lfsr128_gen_bit(prng_lfsr128_state_t* s) {
     // taps: 128, 126, 101, 99
-    char res = s->s & 1;
+    uint8_t res = s->s & 1;
     prng_uint128_t bit = (s->s ^ (s->s >> 2) ^
         (s->s >> 27) ^ (s->s >> 29)) & 1;
     s->s = (bit << 127) | (s->s >> 1);
