@@ -1,15 +1,18 @@
 .PHONY: all clean
 CC = cc
-CFLAGS += -std=c11 -O2
+CFLAGS += -std=c11 -O2 -s
 CFLAGS += -Wall -Wextra -pedantic
-OBJD = bin
 TARGET = tp
+OBJD = bin
 
+EXE = $(TARGET).exe
 SRC = $(wildcard *.c)
 OBJ = $(patsubst %.c,$(OBJD)/%.o,$(SRC))
 
-all: $(OBJ)
-	$(CC) -o $(TARGET) $^
+all: $(EXE)
+
+$(EXE): $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
 
 $(OBJD)/%.o: %.c | $(OBJD)
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -18,4 +21,4 @@ $(OBJD):
 	mkdir $@
 
 clean:
-	del /Q $(TARGET).exe $(subst /,\,$(OBJ)) 2>nul
+	del /Q $(EXE) $(subst /,\,$(OBJ)) 2>nul
