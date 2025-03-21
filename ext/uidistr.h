@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-/* Uniform int distribuion
+/* Uniform int distribution
  * Return integers in range [min, max]
  * Generator output in range [0, 2^w), where w is 32 or 64
  */
