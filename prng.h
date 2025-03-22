@@ -15,10 +15,10 @@ typedef __uint128_t prng_uint128_t;
 #define PRNG_HAS_INT128 0
 #endif
 
-#define PRNG_IF0(x)
-#define PRNG_IF1(x) x
-#define PRNG_IFc(c, x) PRNG_IF ## c(x)
-#define PRNG_IF(c, x) PRNG_IFc(c, x)
+#define PRNG_IF0(...)
+#define PRNG_IF1(...) __VA_ARGS__
+#define PRNG_IFc(c, ...) PRNG_IF ## c(__VA_ARGS__)
+#define PRNG_IF(c, ...) PRNG_IFc(c, __VA_ARGS__)
 
 /* DO:
  * basename
@@ -58,14 +58,14 @@ DO(lfsr64,         uint64_t, 1)
  */
 
 #define PRNG_LIST_OF_UNUSUAL_NAMES \
-DO(xoroshiro1024pp, uint64_t, uint64_t s[16]; size_t p;) \
-DO(xoroshiro1024ss, uint64_t, uint64_t s[16]; size_t p;) \
-DO(xoroshiro1024s,  uint64_t, uint64_t s[16]; size_t p;) \
-DO(mt19937,    uint32_t, uint32_t s[624]; size_t p;) \
-DO(mt19937_64, uint64_t, uint64_t s[312]; size_t p;) \
-DO(pcg32, uint32_t, uint64_t state; uint64_t inc;) \
+DO(xoroshiro1024pp, uint64_t, uint64_t s[ 16]; size_t p;) \
+DO(xoroshiro1024ss, uint64_t, uint64_t s[ 16]; size_t p;) \
+DO(xoroshiro1024s,  uint64_t, uint64_t s[ 16]; size_t p;) \
+DO(mt19937,         uint32_t, uint32_t s[624]; size_t p;) \
+DO(mt19937_64,      uint64_t, uint64_t s[312]; size_t p;) \
+DO(pcg32,           uint32_t, uint64_t state, inc;) \
 PRNG_IF(PRNG_HAS_INT128, DO(lfsr128, uint64_t, prng_uint128_t s;)) \
-PRNG_IF(PRNG_HAS_INT128, DO(pcg64, uint64_t, prng_uint128_t state; prng_uint128_t inc;))
+PRNG_IF(PRNG_HAS_INT128, DO(pcg64,   uint64_t, prng_uint128_t state, inc;))
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn
@@ -79,18 +79,18 @@ typedef struct PRNGN_STATE(name) { ist s[cnt]; } PRNGN_STATE(name);
 PRNG_LIST_OF_NAMES // State structures
 #undef DO
 
-#define DO(name, _, strin) \
-typedef struct PRNGN_STATE(name) { strin } PRNGN_STATE(name);
+#define DO(name, _, ...) \
+typedef struct PRNGN_STATE(name) { __VA_ARGS__ } PRNGN_STATE(name);
 PRNG_LIST_OF_UNUSUAL_NAMES // Unusual state structures
 #undef DO
 
-#define DO(name, ret, _) \
+#define DO(name, ret, ...) \
 ret PRNGN_FUNC(name, gen)(PRNGN_STATE(name)* state);
 PRNG_LIST_OF_NAMES // Generate functions
 PRNG_LIST_OF_UNUSUAL_NAMES
 #undef DO
 
-#define DO(name, ist, _) \
+#define DO(name, ist, ...) \
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* state, ist seed);
 PRNG_LIST_OF_NAMES // Seed functions
 PRNG_LIST_OF_UNUSUAL_NAMES
