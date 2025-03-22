@@ -3,22 +3,21 @@ CC = cc
 CFLAGS += -std=c11 -O2 -s
 CFLAGS += -Wall -Wextra -pedantic
 TARGET = tp
-OBJD = bin
+OBJDIR = bin
 
-EXE = $(TARGET).exe
 SRC = $(wildcard *.c)
-OBJ = $(patsubst %.c,$(OBJD)/%.o,$(SRC))
+OBJ = $(patsubst %.c,$(OBJDIR)/%.o,$(SRC))
 
-all: $(EXE)
+all: $(TARGET)
 
-$(EXE): $(OBJ)
+$(TARGET): $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 
-$(OBJD)/%.o: %.c | $(OBJD)
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(OBJD):
-	mkdir $@
+$(OBJDIR):
+	mkdir -p $@
 
 clean:
-	del /Q $(EXE) $(subst /,\,$(OBJ)) 2>nul
+	rm -rf $(TARGET) $(OBJDIR)
