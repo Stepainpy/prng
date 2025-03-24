@@ -107,6 +107,20 @@ uint8_t prng_lfsr32_gen_bit(prng_lfsr32_state_t* state);
 uint8_t prng_lfsr64_gen_bit(prng_lfsr64_state_t* state);
 PRNG_IF(PRNG_HAS_INT128, uint8_t prng_lfsr128_gen_bit(prng_lfsr128_state_t* state);)
 
+/* Design for seedseq taken from:
+ * https://www.pcg-random.org/posts/developing-a-seed_seq-alternative.html
+ */
+
+typedef struct prng_seedseq_t {
+    uint32_t state[4];
+    uint32_t hash_mul;
+} prng_seedseq_t;
+
+void prng_seedseq_init(prng_seedseq_t* sq, uint32_t init[static 4]);
+void prng_seedseq_update(prng_seedseq_t* sq);
+void prng_seedseq_get_u32(prng_seedseq_t* sq, uint32_t* dest, size_t count);
+void prng_seedseq_get_u64(prng_seedseq_t* sq, uint64_t* dest, size_t count);
+
 #ifdef __cplusplus
 }
 #endif
