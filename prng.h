@@ -63,6 +63,7 @@ DO(jsf64,          uint64_t, 4)
 DO(xoroshiro1024pp, uint64_t, uint64_t s[ 16]; size_t p;) \
 DO(xoroshiro1024ss, uint64_t, uint64_t s[ 16]; size_t p;) \
 DO(xoroshiro1024s,  uint64_t, uint64_t s[ 16]; size_t p;) \
+DO(well512a,        uint32_t, uint32_t s[ 16]; size_t p;) \
 DO(mt19937,         uint32_t, uint32_t s[624]; size_t p;) \
 DO(mt19937_64,      uint64_t, uint64_t s[312]; size_t p;) \
 DO(pcg32,           uint32_t, uint64_t state, inc;) \

@@ -35,6 +35,12 @@ void prng_xoroshiro1024s_seed(prng_xoroshiro1024s_state_t* s, uint64_t seed) {
     s->p = 0;
 }
 
+void prng_well512a_seed(prng_well512a_state_t* s, uint32_t seed) {
+    for (size_t i = 0; i < 16; i++)
+        s->s[i] = prng_splitmix32(&seed);
+    s->p = 0;
+}
+
 void prng_mt19937_seed(prng_mt19937_state_t* s, uint32_t seed) {
     s->s[0] = seed;
     for (size_t i = 1; i < 624; i++) {
@@ -497,6 +503,19 @@ uint64_t prng_xoroshiro1024s_gen(prng_xoroshiro1024s_state_t* s) {
     s->s[s->p] = rol64(s15, 36);
 
     return res;
+}
+
+uint32_t prng_well512a_gen(prng_well512a_state_t* s) {
+    uint32_t z0 = s->s[(s->p + 15) & 15];
+    uint32_t z1 = (s->s[s->p] ^ s->s[s->p] << 16) ^
+        (s->s[(s->p + 13) & 15] ^ s->s[(s->p + 13) & 15] << 15);
+    uint32_t z2 = s->s[(s->p + 9) & 15] ^ s->s[(s->p + 9) & 15] >> 11;
+
+    s->s[s->p] = z1 ^ z2;
+    s->s[(s->p + 15) & 15] = (z0 ^ z0 << 2) ^ (z1 ^ z1 << 18) ^ (z2 << 28)
+        ^ (s->s[s->p] ^ (s->s[s->p] << 5 & 0xda442d24));
+    s->p = (s->p + 15) & 15;
+    return s->s[s->p];
 }
 
 static void mt19937_step(prng_mt19937_state_t* s) {

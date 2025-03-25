@@ -14,6 +14,7 @@ Collection of pseudorandom number generators. And also the tools for them.
 - `pcg32`
 - `lfsr32`
 - `jsf32`
+- `well512a`
 - `splitmix32`
 
 64 bits:
