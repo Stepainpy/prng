@@ -1,6 +1,6 @@
 # PRNG
 
-Collection of pseudorandom number generators. And including the uniform integer distribution.
+Collection of pseudorandom number generators. And also the tools for them.
 
 ## List of PRNG's
 
@@ -13,6 +13,7 @@ Collection of pseudorandom number generators. And including the uniform integer 
 - `mt19937`
 - `pcg32`
 - `lfsr32`
+- `jsf32`
 - `splitmix32`
 
 64 bits:
@@ -26,6 +27,7 @@ Collection of pseudorandom number generators. And including the uniform integer 
 - `pcg64`
 - `lfsr64`
 - `lfsr128`
+- `jsf64`
 - `splitmix64`
 
 All generators output number in range $[0; 2^w)$, where $w$ is output bit width.

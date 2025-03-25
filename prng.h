@@ -49,7 +49,9 @@ DO(xoshiro512pp,   uint64_t, 8) \
 DO(xoshiro512ss,   uint64_t, 8) \
 DO(xoshiro512p,    uint64_t, 8) \
 DO(lfsr32,         uint32_t, 1) \
-DO(lfsr64,         uint64_t, 1)
+DO(lfsr64,         uint64_t, 1) \
+DO(jsf32,          uint32_t, 4) \
+DO(jsf64,          uint64_t, 4)
 
 /* DO:
  * basename

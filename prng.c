@@ -648,3 +648,21 @@ uint64_t prng_lfsr128_gen(prng_lfsr128_state_t* s) {
     return res;
 }
 #endif
+
+uint32_t prng_jsf32_gen(prng_jsf32_state_t* s) {
+    uint32_t t = s->s[0] - rol32(s->s[1], 27);
+    s->s[0] = s->s[1] ^ rol32(s->s[2], 17);
+    s->s[1] = s->s[2] + s->s[3];
+    s->s[2] = s->s[3] + t;
+    s->s[3] = t + s->s[0];
+    return s->s[3];
+}
+
+uint64_t prng_jsf64_gen(prng_jsf64_state_t* s) {
+    uint64_t t = s->s[0] - rol64(s->s[1], 7);
+    s->s[0] = s->s[1] ^ rol64(s->s[2], 13);
+    s->s[1] = s->s[2] + rol64(s->s[3], 37);
+    s->s[2] = s->s[3] + t;
+    s->s[3] = t + s->s[0];
+    return s->s[3];
+}
