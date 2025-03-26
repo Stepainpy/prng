@@ -24,34 +24,42 @@ typedef __uint128_t prng_uint128_t;
  * basename
  * state/return type
  * count of numbers in state
+ * has member index 'p'
+ * use default seed function
  */
 
 #define PRNG_LIST_OF_NAMES \
-DO(xorshift32,     uint32_t, 1) \
-DO(xorshift64,     uint64_t, 1) \
-DO(xorshift64s,    uint64_t, 1) \
-DO(xorshift128,    uint32_t, 4) \
-DO(xorshift128p,   uint64_t, 2) \
-DO(xorshiftr128p,  uint64_t, 2) \
-DO(xorwow,         uint32_t, 6) \
-DO(xoroshiro64s,   uint32_t, 2) \
-DO(xoroshiro64ss,  uint32_t, 2) \
-DO(xoroshiro128pp, uint64_t, 2) \
-DO(xoroshiro128ss, uint64_t, 2) \
-DO(xoroshiro128p,  uint64_t, 2) \
-DO(xoshiro128pp,   uint32_t, 4) \
-DO(xoshiro128ss,   uint32_t, 4) \
-DO(xoshiro128p,    uint32_t, 4) \
-DO(xoshiro256pp,   uint64_t, 4) \
-DO(xoshiro256ss,   uint64_t, 4) \
-DO(xoshiro256p,    uint64_t, 4) \
-DO(xoshiro512pp,   uint64_t, 8) \
-DO(xoshiro512ss,   uint64_t, 8) \
-DO(xoshiro512p,    uint64_t, 8) \
-DO(lfsr32,         uint32_t, 1) \
-DO(lfsr64,         uint64_t, 1) \
-DO(jsf32,          uint32_t, 4) \
-DO(jsf64,          uint64_t, 4)
+DO(xorshift32,      uint32_t,   1, 0, 1) \
+DO(xorshift64,      uint64_t,   1, 0, 1) \
+DO(xorshift64s,     uint64_t,   1, 0, 1) \
+DO(xorshift128,     uint32_t,   4, 0, 1) \
+DO(xorshift128p,    uint64_t,   2, 0, 1) \
+DO(xorshiftr128p,   uint64_t,   2, 0, 1) \
+DO(xorwow,          uint32_t,   6, 0, 1) \
+DO(xoroshiro64s,    uint32_t,   2, 0, 1) \
+DO(xoroshiro64ss,   uint32_t,   2, 0, 1) \
+DO(xoroshiro128pp,  uint64_t,   2, 0, 1) \
+DO(xoroshiro128ss,  uint64_t,   2, 0, 1) \
+DO(xoroshiro128p,   uint64_t,   2, 0, 1) \
+DO(xoshiro128pp,    uint32_t,   4, 0, 1) \
+DO(xoshiro128ss,    uint32_t,   4, 0, 1) \
+DO(xoshiro128p,     uint32_t,   4, 0, 1) \
+DO(xoshiro256pp,    uint64_t,   4, 0, 1) \
+DO(xoshiro256ss,    uint64_t,   4, 0, 1) \
+DO(xoshiro256p,     uint64_t,   4, 0, 1) \
+DO(xoshiro512pp,    uint64_t,   8, 0, 1) \
+DO(xoshiro512ss,    uint64_t,   8, 0, 1) \
+DO(xoshiro512p,     uint64_t,   8, 0, 1) \
+DO(lfsr32,          uint32_t,   1, 0, 1) \
+DO(lfsr64,          uint64_t,   1, 0, 1) \
+DO(jsf32,           uint32_t,   4, 0, 1) \
+DO(jsf64,           uint64_t,   4, 0, 1) \
+DO(xoroshiro1024pp, uint64_t,  16, 1, 1) \
+DO(xoroshiro1024ss, uint64_t,  16, 1, 1) \
+DO(xoroshiro1024s,  uint64_t,  16, 1, 1) \
+DO(well512a,        uint32_t,  16, 1, 1) \
+DO(mt19937,         uint32_t, 624, 1, 0) \
+DO(mt19937_64,      uint64_t, 312, 1, 0) \
 
 /* DO:
  * basename
@@ -60,15 +68,9 @@ DO(jsf64,          uint64_t, 4)
  */
 
 #define PRNG_LIST_OF_UNUSUAL_NAMES \
-DO(xoroshiro1024pp, uint64_t, uint64_t s[ 16]; size_t p;) \
-DO(xoroshiro1024ss, uint64_t, uint64_t s[ 16]; size_t p;) \
-DO(xoroshiro1024s,  uint64_t, uint64_t s[ 16]; size_t p;) \
-DO(well512a,        uint32_t, uint32_t s[ 16]; size_t p;) \
-DO(mt19937,         uint32_t, uint32_t s[624]; size_t p;) \
-DO(mt19937_64,      uint64_t, uint64_t s[312]; size_t p;) \
-DO(pcg32,           uint32_t, uint64_t state, inc;) \
+DO(pcg32, uint32_t, uint64_t state, inc;) \
 PRNG_IF(PRNG_HAS_INT128, DO(lfsr128, uint64_t, prng_uint128_t s;)) \
-PRNG_IF(PRNG_HAS_INT128, DO(pcg64,   uint64_t, prng_uint128_t state, inc;))
+PRNG_IF(PRNG_HAS_INT128, DO(pcg64,   uint64_t, prng_uint128_t state, inc;)) \
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn
@@ -77,8 +79,10 @@ PRNG_IF(PRNG_HAS_INT128, DO(pcg64,   uint64_t, prng_uint128_t state, inc;))
 extern "C" {
 #endif
 
-#define DO(name, ist, cnt) \
-typedef struct PRNGN_STATE(name) { ist s[cnt]; } PRNGN_STATE(name);
+#define DO(name, ist, cnt, hasp, ...)  \
+typedef struct PRNGN_STATE(name) {      \
+    ist s[cnt]; PRNG_IF(hasp, size_t p;) \
+} PRNGN_STATE(name);
 PRNG_LIST_OF_NAMES // State structures
 #undef DO
 

@@ -9,37 +9,15 @@
 #define uint128_lit(h, l) ((prng_uint128_t)(h) << 64 | (l))
 #endif
 
-#define DO(name, ist, cnt) \
+#define DO(name, ist, cnt, hasp, use_dflt, ...) \
+PRNG_IF(use_dflt, \
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, ist seed) { \
     for (size_t i = 0; i < cnt; i++) \
         s->s[i] = splitmix(&seed); \
-}
+    PRNG_IF(hasp, s->p = 0;) \
+})
 PRNG_LIST_OF_NAMES // Seed function definitions
 #undef DO
-
-void prng_xoroshiro1024pp_seed(prng_xoroshiro1024pp_state_t* s, uint64_t seed) {
-    for (size_t i = 0; i < 16; i++)
-        s->s[i] = prng_splitmix64(&seed);
-    s->p = 0;
-}
-
-void prng_xoroshiro1024ss_seed(prng_xoroshiro1024ss_state_t* s, uint64_t seed) {
-    for (size_t i = 0; i < 16; i++)
-        s->s[i] = prng_splitmix64(&seed);
-    s->p = 0;
-}
-
-void prng_xoroshiro1024s_seed(prng_xoroshiro1024s_state_t* s, uint64_t seed) {
-    for (size_t i = 0; i < 16; i++)
-        s->s[i] = prng_splitmix64(&seed);
-    s->p = 0;
-}
-
-void prng_well512a_seed(prng_well512a_state_t* s, uint32_t seed) {
-    for (size_t i = 0; i < 16; i++)
-        s->s[i] = prng_splitmix32(&seed);
-    s->p = 0;
-}
 
 void prng_mt19937_seed(prng_mt19937_state_t* s, uint32_t seed) {
     s->s[0] = seed;
@@ -68,7 +46,7 @@ void prng_mt19937_64_seed(prng_mt19937_64_state_t* s, uint64_t seed) {
 void prng_pcg32_seed(prng_pcg32_state_t* s, uint32_t seed) {
     uint64_t seed64 = (uint64_t)prng_splitmix32(&seed) << 32 | prng_splitmix32(&seed);
     s->state = prng_splitmix64(&seed64);
-    s->inc = prng_splitmix64(&seed64) << 1 | 1;
+    s->inc   = prng_splitmix64(&seed64) << 1 | 1;
 }
 
 #if PRNG_HAS_INT128
