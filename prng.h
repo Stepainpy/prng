@@ -2,6 +2,7 @@
  * https://en.wikipedia.org/wiki/Xorshift
  * https://prng.di.unimi.it/
  * https://www.pcg-random.org/
+ * https://arxiv.org/pdf/1704.00358
  */
 #ifndef PRNG_H
 #define PRNG_H
@@ -68,7 +69,9 @@ DO(mt19937_64,      uint64_t, 312, 1, 0) \
  */
 
 #define PRNG_LIST_OF_UNUSUAL_NAMES \
-DO(pcg32, uint32_t, uint64_t state, inc;) \
+DO(pcg32,  uint32_t, uint64_t state, inc;) \
+DO(msws32, uint32_t, uint64_t x, w, s;) \
+DO(msws64, uint64_t, uint64_t x0, x1, w0, w1, s0, s1;) \
 PRNG_IF(PRNG_HAS_INT128, DO(lfsr128, uint64_t, prng_uint128_t s;)) \
 PRNG_IF(PRNG_HAS_INT128, DO(pcg64,   uint64_t, prng_uint128_t state, inc;)) \
 

@@ -9,7 +9,7 @@
 #define uint128_lit(h, l) ((prng_uint128_t)(h) << 64 | (l))
 #endif
 
-#define DO(name, ist, cnt, hasp, use_dflt, ...) \
+#define DO(name, ist, cnt, hasp, use_dflt) \
 PRNG_IF(use_dflt, \
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, ist seed) { \
     for (size_t i = 0; i < cnt; i++) \
@@ -43,10 +43,23 @@ void prng_mt19937_64_seed(prng_mt19937_64_state_t* s, uint64_t seed) {
     s->p = 312;
 }
 
+void prng_msws32_seed(prng_msws32_state_t* s, uint32_t seed) {
+    uint64_t seed64 = (uint64_t)prng_splitmix32(&seed) << 32 | prng_splitmix32(&seed);
+    s->x = prng_splitmix64(&seed64);
+    s->w = prng_splitmix64(&seed64);
+    s->s = 0xb5ad4eceda1ce2a9;
+}
+
+void prng_msws64_seed(prng_msws64_state_t* s, uint64_t seed) {
+    s->x0 = prng_splitmix64(&seed); s->x1 = prng_splitmix64(&seed);
+    s->w0 = prng_splitmix64(&seed); s->w1 = prng_splitmix64(&seed);
+    s->s0 =     0xb5ad4eceda1ce2a9; s->s1 =     0x278c5a4d8419fe6b;
+}
+
 void prng_pcg32_seed(prng_pcg32_state_t* s, uint32_t seed) {
     uint64_t seed64 = (uint64_t)prng_splitmix32(&seed) << 32 | prng_splitmix32(&seed);
     s->state = prng_splitmix64(&seed64);
-    s->inc   = prng_splitmix64(&seed64) << 1 | 1;
+    s->inc   = prng_splitmix64(&seed64) | 1;
 }
 
 #if PRNG_HAS_INT128
@@ -662,4 +675,18 @@ uint64_t prng_jsf64_gen(prng_jsf64_state_t* s) {
     s->s[2] = s->s[3] + t;
     s->s[3] = t + s->s[0];
     return s->s[3];
+}
+
+uint32_t prng_msws32_gen(prng_msws32_state_t* s) {
+    s->x *= s->x; s->x += (s->w += s->s);
+    return s->x = (s->x >> 32) | (s->x << 32);
+}
+
+uint64_t prng_msws64_gen(prng_msws64_state_t* s) {
+    uint64_t xx;
+    s->x0 *= s->x0; xx = s->x0 += (s->w0 += s->s0);
+    s->x0 = (s->x0 >> 32) | (s->x0 << 32);
+    s->x1 *= s->x1;      s->x1 += (s->w1 += s->s1);
+    s->x1 = (s->x1 >> 32) | (s->x1 << 32);
+    return xx ^ s->x1;
 }

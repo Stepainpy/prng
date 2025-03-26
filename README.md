@@ -15,6 +15,7 @@ Collection of pseudorandom number generators. And also the tools for them.
 - `lfsr32`
 - `jsf32`
 - `well512a`
+- `msws32`
 - `splitmix32`
 
 64 bits:
@@ -29,6 +30,7 @@ Collection of pseudorandom number generators. And also the tools for them.
 - `lfsr64`
 - `lfsr128`
 - `jsf64`
+- `msws64`
 - `splitmix64`
 
 All generators output number in range $[0; 2^w)$, where $w$ is output bit width.
