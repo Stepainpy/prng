@@ -47,6 +47,12 @@ use for macros: `prng_state_t`, `prng_seed`, `prng_gen`.
 
 ## Extentions
 
+All extentions is single header. If has functions you maybe preinclude define `PRNGE_XXX_IMPLEMENTATION` for add definitions of functions.
+
+### Engine
+
+Simple structure for storage generator function and pointer to state for him. Using in uniform distribution.
+
 ### Uniform distributions
 
 `uidistr` - uniform integer distribution. Convert range $[0; 2^w)$ to $[min; max]$, where $w$ is 32 or 64  
@@ -59,16 +65,16 @@ use for macros: `prng_state_t`, `prng_seed`, `prng_gen`.
 
 Taken from: [pcg alternative of `std::seed_seq`](https://www.pcg-random.org/posts/developing-a-seed_seq-alternative.html)
 
-Structure `seedseq_t` use for mixing start entropy and filling prng state at 'seed' values.
+Structure `prnge_seedseq_t` use for mixing start entropy and filling prng state at 'seed' values.
 
 Simple exapmle
 ``` c
-seedseq_t sq;
+prnge_seedseq_t sq;
 // fill sequence outer entropy
-seedseq_init(&sq, (uint32_t[4]){time(0), clock(), 0, 0});
+prnge_seedseq_init(&sq, (uint32_t[4]){time(0), clock(), 0, 0});
 /* ... */
 uint32_t state[4] = {0};
-seedseq_get_u32(&sq, state, 4); // set state at seeds
+prnge_seedseq_get_u32(&sq, state, 4); // set state at seeds
 ```
 
 ## My stuffs

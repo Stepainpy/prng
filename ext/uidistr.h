@@ -1,5 +1,5 @@
-#ifndef UIDISTR_H
-#define UIDISTR_H
+#ifndef PRNGE_UIDISTR_H
+#define PRNGE_UIDISTR_H
 
 #include <stdint.h>
 #include "engine.h"
@@ -13,31 +13,31 @@
 extern "C" {
 #endif
 
-typedef struct uidistr32_t {
+typedef struct prnge_uidistr32_t {
     prnge_engine32_t eng;
     uint32_t min, max;
-} uidistr32_t;
+} prnge_uidistr32_t;
 
-typedef struct uidistr64_t {
+typedef struct prnge_uidistr64_t {
     prnge_engine64_t eng;
     uint64_t min, max;
-} uidistr64_t;
+} prnge_uidistr64_t;
 
-uint32_t uidistr32_gen(uidistr32_t* distr);
-uint64_t uidistr64_gen(uidistr64_t* distr);
+uint32_t prnge_uidistr32_gen(prnge_uidistr32_t* distr);
+uint64_t prnge_uidistr64_gen(prnge_uidistr64_t* distr);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // UIDISTR_H
+#endif // PRNGE_UIDISTR_H
 
-#ifdef UIDISTR_IMPLEMENTATION
+#ifdef PRNGE_UIDISTR_IMPLEMENTATION
 /* Algorithm taken from
  * https://arxiv.org/abs/1805.10941 p.11
  */
 
-uint32_t uidistr32_gen(uidistr32_t* d) {
+uint32_t prnge_uidistr32_gen(prnge_uidistr32_t* d) {
     const uint32_t range = d->max - d->min + 1;
     uint64_t prod = (uint64_t)prnge_engine_call(d->eng) * (uint64_t)range;
     uint32_t low = (uint32_t)prod;
@@ -52,7 +52,7 @@ uint32_t uidistr32_gen(uidistr32_t* d) {
 }
 
 #ifdef __SIZEOF_INT128__
-uint64_t uidistr64_gen(uidistr64_t* d) {
+uint64_t prnge_uidistr64_gen(prnge_uidistr64_t* d) {
     const uint64_t range = d->max - d->min + 1;
     __uint128_t prod = (__uint128_t)prnge_engine_call(d->eng) * (__uint128_t)range;
     uint64_t low = (uint64_t)prod;
@@ -66,7 +66,7 @@ uint64_t uidistr64_gen(uidistr64_t* d) {
     return (prod >> 64) + d->min;
 }
 #else
-uint64_t uidistr64_gen(uidistr64_t* d) {
+uint64_t prnge_uidistr64_gen(prnge_uidistr64_t* d) {
     const uint64_t range = d->max - d->min + 1;
     const uint64_t scale = UINT64_MAX / range;
     const uint64_t past = range * scale;
@@ -77,4 +77,4 @@ uint64_t uidistr64_gen(uidistr64_t* d) {
 }
 #endif // __SIZEOF_INT128__
 
-#endif // UIDISTR_IMPLEMENTATION
+#endif // PRNGE_UIDISTR_IMPLEMENTATION

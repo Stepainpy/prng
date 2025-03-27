@@ -1,5 +1,5 @@
-#ifndef UFDISTR_H
-#define UFDISTR_H
+#ifndef PRNGE_UFDISTR_H
+#define PRNGE_UFDISTR_H
 
 #include <float.h>
 
@@ -10,15 +10,15 @@
  */
 
 #if FLT_MANT_DIG == 24
-#define ufdistr_zeroone(randint32) (0x1.p-24f * ((randint32) >> 8))
+#define prnge_ufdistr_zeroone(randint32) (0x1.p-24f * ((randint32) >> 8))
 #else
 #error "This code require IEEE-754 32-bit float"
 #endif
 
 #if DBL_MANT_DIG == 53
-#define uddistr_zeroone(randint64) (0x1.p-53 * ((randint64) >> 11))
+#define prnge_uddistr_zeroone(randint64) (0x1.p-53 * ((randint64) >> 11))
 #else
 #error "This code require IEEE-754 64-bit float"
 #endif
 
-#endif // UFDISTR_H
+#endif // PRNGE_UFDISTR_H
