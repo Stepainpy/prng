@@ -11,12 +11,12 @@ Collection of pseudorandom number generators. And also the tools for them.
 - `xoroshiro64(*/**)`
 - `xoshiro128(+/++/**)`
 - `mt19937`
+- `splitmix32`
 - `pcg32`
 - `lfsr32`
 - `jsf32`
 - `well512a`
 - `msws32`
-- `splitmix32`
 
 64 bits:
 - `xorshift64[*]`
@@ -26,16 +26,36 @@ Collection of pseudorandom number generators. And also the tools for them.
 - `xoroshiro128(+/++/**)`
 - `xoroshiro1024(++/*/**)`
 - `mt19937-64`
+- `splitmix64`
 - `pcg64`
 - `lfsr64`
 - `lfsr128`
 - `jsf64`
 - `msws64`
-- `splitmix64`
 
 All generators output number in range $[0; 2^w)$, where $w$ is output bit width.
 
-## Seed sequence
+## Basic API
+
+`prng_xxx_state_t` - structure of storage generator inner state  
+`prng_xxx_seed` - set state of generator from passed seed  
+`prng_xxx_gen` - return pseudorandom integer  
+where `xxx` - name of prng.
+
+`PRNG_ENGINE` - name of generator by default, if not defined then equal `xoshiro256ss`  
+use for macros: `prng_state_t`, `prng_seed`, `prng_gen`.
+
+## Extentions
+
+### Uniform distributions
+
+`uidistr` - uniform integer distribution. Convert range $[0; 2^w)$ to $[min; max]$, where $w$ is 32 or 64  
+`ufdistr` - uniform float  distribution. Convert range $[0; 2^{32})$* to $[0; 1)$  
+`uddistr` - uniform double distribution. Convert range $[0; 2^{64})$** to $[0; 1)$  
+\* - use higher 24 bit from integer  
+\** - use higher 53 bit from integer  
+
+### Seed sequence
 
 Taken from: [pcg alternative of `std::seed_seq`](https://www.pcg-random.org/posts/developing-a-seed_seq-alternative.html)
 
@@ -51,7 +71,9 @@ uint32_t state[4] = {0};
 seedseq_get_u32(&sq, state, 4); // set state at seeds
 ```
 
-## Xoshiro256** secret messages
+## My stuffs
+
+### Xoshiro256** secret messages
 
 Taken from: [pcg blog about xoshiro256**](https://www.pcg-random.org/posts/a-quick-look-at-xoshiro256.html)
 
