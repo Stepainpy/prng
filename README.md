@@ -39,16 +39,16 @@ All generators output number in range $[0; 2^w)$, where $w$ is output bit width.
 
 Taken from: [pcg alternative of `std::seed_seq`](https://www.pcg-random.org/posts/developing-a-seed_seq-alternative.html)
 
-Structure `prng_seedseq_t` use for mixing start entropy and filling prng state at 'seed' values.
+Structure `seedseq_t` use for mixing start entropy and filling prng state at 'seed' values.
 
 Simple exapmle
 ``` c
-prng_seedseq_t sq;
+seedseq_t sq;
 // fill sequence outer entropy
-prng_seedseq_init(&sq, (uint32_t[4]){time(0), clock(), 0, 0});
+seedseq_init(&sq, (uint32_t[4]){time(0), clock(), 0, 0});
 /* ... */
 uint32_t state[4] = {0};
-prng_seedseq_get_u32(&sq, state, 4); // set state at seeds
+seedseq_get_u32(&sq, state, 4); // set state at seeds
 ```
 
 ## Xoshiro256** secret messages
