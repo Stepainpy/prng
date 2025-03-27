@@ -6,12 +6,12 @@
 
 uint32_t uidistr32_gen(uidistr32_t* d) {
     const uint32_t range = d->max - d->min + 1;
-    uint64_t prod = (uint64_t)d->gen(d->state) * (uint64_t)range;
+    uint64_t prod = (uint64_t)prnge_engine_call(d->eng) * (uint64_t)range;
     uint32_t low = (uint32_t)prod;
     if (low < range) {
         uint32_t th = -range % range;
         while (low < th) {
-            prod = (uint64_t)d->gen(d->state) * (uint64_t)range;
+            prod = (uint64_t)prnge_engine_call(d->eng) * (uint64_t)range;
             low = (uint32_t)prod;
         }
     }
@@ -21,12 +21,12 @@ uint32_t uidistr32_gen(uidistr32_t* d) {
 #ifdef __SIZEOF_INT128__
 uint64_t uidistr64_gen(uidistr64_t* d) {
     const uint64_t range = d->max - d->min + 1;
-    __uint128_t prod = (__uint128_t)d->gen(d->state) * (__uint128_t)range;
+    __uint128_t prod = (__uint128_t)prnge_engine_call(d->eng) * (__uint128_t)range;
     uint64_t low = (uint64_t)prod;
     if (low < range) {
         uint64_t th = -range % range;
         while (low < th) {
-            prod = (__uint128_t)d->gen(d->state) * (__uint128_t)range;
+            prod = (__uint128_t)prnge_engine_call(d->eng) * (__uint128_t)range;
             low = (uint64_t)prod;
         }
     }
@@ -38,7 +38,7 @@ uint64_t uidistr64_gen(uidistr64_t* d) {
     const uint64_t scale = UINT64_MAX / range;
     const uint64_t past = range * scale;
     uint64_t ret;
-    do ret = d->gen(d->state); while (ret >= past);
+    do ret = prnge_engine_call(d->eng); while (ret >= past);
     ret /= scale;
     return ret + d->min;
 }

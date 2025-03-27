@@ -2,6 +2,7 @@
 #define UIDISTR_H
 
 #include <stdint.h>
+#include "engine.h"
 
 /* Uniform int distribution
  * Return integers in range [min, max]
@@ -13,17 +14,13 @@ extern "C" {
 #endif
 
 typedef struct uidistr32_t {
-    uint32_t (*gen)(void*);
-    void* state;
-    uint32_t min;
-    uint32_t max;
+    prnge_engine32_t eng;
+    uint32_t min, max;
 } uidistr32_t;
 
 typedef struct uidistr64_t {
-    uint64_t (*gen)(void*);
-    void* state;
-    uint64_t min;
-    uint64_t max;
+    prnge_engine64_t eng;
+    uint64_t min, max;
 } uidistr64_t;
 
 uint32_t uidistr32_gen(uidistr32_t* distr);
@@ -32,8 +29,5 @@ uint64_t uidistr64_gen(uidistr64_t* distr);
 #ifdef __cplusplus
 }
 #endif
-
-#define UIDISTR_TO_VOID_CONTEXT(fn, ret, argt) \
-ret fn ## _void_ctx(void* ctx) { return fn((argt*)ctx); }
 
 #endif // UIDISTR_H
