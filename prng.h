@@ -55,6 +55,7 @@ DO(lfsr32,          uint32_t,   1, 0, 1) \
 DO(lfsr64,          uint64_t,   1, 0, 1) \
 DO(jsf32,           uint32_t,   4, 0, 1) \
 DO(jsf64,           uint64_t,   4, 0, 1) \
+DO(siprand,         uint64_t,   4, 0, 1) \
 DO(xoroshiro1024pp, uint64_t,  16, 1, 1) \
 DO(xoroshiro1024ss, uint64_t,  16, 1, 1) \
 DO(xoroshiro1024s,  uint64_t,  16, 1, 1) \

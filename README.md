@@ -32,6 +32,7 @@ Collection of pseudorandom number generators. And also the tools for them.
 - `lfsr128`
 - `jsf64`
 - `msws64`
+- [`siprand`](#siprand-generator)
 
 All generators output number in range $[0; 2^w)$, where $w$ is output bit width.
 
@@ -78,6 +79,10 @@ prnge_seedseq_get_u32(&sq, state, 4); // set state at seeds
 ```
 
 ## My stuffs
+
+### SipRand
+
+This generator based on SipRound function from SipHash function. For result use reduced XOR state[0..3]
 
 ### Xoshiro256** secret messages
 

@@ -615,3 +615,18 @@ uint64_t prng_msws64_gen(prng_msws64_state_t* s) {
     s->x1 = (s->x1 >> 32) | (s->x1 << 32);
     return xx ^ s->x1;
 }
+
+uint64_t prng_siprand_gen(prng_siprand_state_t* s) {
+    s->s[0] += s->s[1]; s->s[2] += s->s[3];
+    s->s[1] = rol64(s->s[1], 13);
+    s->s[3] = rol64(s->s[3], 16);
+    s->s[1] ^= s->s[0]; s->s[3] ^= s->s[2];
+    s->s[0] = rol64(s->s[0], 32);
+    
+    s->s[2] += s->s[1]; s->s[0] += s->s[3];
+    s->s[1] = rol64(s->s[1], 17);
+    s->s[3] = rol64(s->s[3], 21);
+    s->s[1] ^= s->s[2]; s->s[3] ^= s->s[0];
+    s->s[2] = rol64(s->s[2], 32);
+    return s->s[0] ^ s->s[1] ^ s->s[2] ^ s->s[3];
+}
