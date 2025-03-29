@@ -84,32 +84,37 @@ PRNG_IF(PRNG_HAS_INT128, DO(pcg64,   uint64_t, prng_uint128_t state, inc;)) \
 extern "C" {
 #endif
 
+// State structures
 #define DO(name, ist, cnt, hasp, ...)  \
 typedef struct PRNGN_STATE(name) {      \
     ist s[cnt]; PRNG_IF(hasp, size_t p;) \
 } PRNGN_STATE(name);
-PRNG_LIST_OF_NAMES // State structures
+PRNG_LIST_OF_NAMES
 #undef DO
 
+// Unusual state structures
 #define DO(name, _, ...) \
 typedef struct PRNGN_STATE(name) { __VA_ARGS__ } PRNGN_STATE(name);
-PRNG_LIST_OF_UNUSUAL_NAMES // Unusual state structures
-#undef DO
-
-#define DO(name, rett, ...) typedef rett PRNGN_RET_T(name);
-PRNG_LIST_OF_NAMES // Return type
 PRNG_LIST_OF_UNUSUAL_NAMES
 #undef DO
 
+// Return type
+#define DO(name, rett, ...) typedef rett PRNGN_RET_T(name);
+PRNG_LIST_OF_NAMES
+PRNG_LIST_OF_UNUSUAL_NAMES
+#undef DO
+
+// Generate functions
 #define DO(name, ret, ...) \
 ret PRNGN_FUNC(name, gen)(PRNGN_STATE(name)* state);
-PRNG_LIST_OF_NAMES // Generate functions
+PRNG_LIST_OF_NAMES
 PRNG_LIST_OF_UNUSUAL_NAMES
 #undef DO
 
+// Seed functions
 #define DO(name, ist, ...) \
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* state, ist seed);
-PRNG_LIST_OF_NAMES // Seed functions
+PRNG_LIST_OF_NAMES
 PRNG_LIST_OF_UNUSUAL_NAMES
 #undef DO
 

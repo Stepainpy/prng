@@ -7,6 +7,7 @@
 #define uint128_lit(h, l) ((prng_uint128_t)(h) << 64 | (l))
 #endif
 
+// Seed function definitions
 #define DO(name, ist, cnt, hasp, use_dflt) \
 PRNG_IF(use_dflt, \
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, ist seed) { \
@@ -14,7 +15,7 @@ void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, ist seed) { \
         s->s[i] = spmix_ ## ist(&seed); \
     PRNG_IF(hasp, s->p = 0;) \
 })
-PRNG_LIST_OF_NAMES // Seed function definitions
+PRNG_LIST_OF_NAMES
 #undef DO
 
 void prng_mt19937_seed(prng_mt19937_state_t* s, uint32_t seed) {
