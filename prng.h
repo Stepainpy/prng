@@ -77,6 +77,7 @@ PRNG_IF(PRNG_HAS_INT128, DO(lfsr128, uint64_t, prng_uint128_t s;)) \
 PRNG_IF(PRNG_HAS_INT128, DO(pcg64,   uint64_t, prng_uint128_t state, inc;)) \
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
+#define PRNGN_RET_T(bn)    prng_ ## bn ## _ret_t
 #define PRNGN_FUNC(bn, fn) prng_ ## bn ## _ ## fn
 
 #ifdef __cplusplus
@@ -93,6 +94,11 @@ PRNG_LIST_OF_NAMES // State structures
 #define DO(name, _, ...) \
 typedef struct PRNGN_STATE(name) { __VA_ARGS__ } PRNGN_STATE(name);
 PRNG_LIST_OF_UNUSUAL_NAMES // Unusual state structures
+#undef DO
+
+#define DO(name, rett, ...) typedef rett PRNGN_RET_T(name);
+PRNG_LIST_OF_NAMES // Return type
+PRNG_LIST_OF_UNUSUAL_NAMES
 #undef DO
 
 #define DO(name, ret, ...) \
@@ -127,9 +133,11 @@ PRNG_IF(PRNG_HAS_INT128, uint8_t prng_lfsr128_gen_bit(prng_lfsr128_state_t* stat
 #endif
 
 #define PRNGN_STATE_EXP(bn)    PRNGN_STATE(bn)
+#define PRNGN_RET_T_EXP(bn)    PRNGN_RET_T(bn)
 #define PRNGN_FUNC_EXP(bn, fn) PRNGN_FUNC(bn, fn)
 
 #define prng_state_t PRNGN_STATE_EXP(PRNG_ENGINE)
+#define prng_ret_t   PRNGN_RET_T_EXP(PRNG_ENGINE)
 #define prng_gen  PRNGN_FUNC_EXP(PRNG_ENGINE, gen)
 #define prng_seed PRNGN_FUNC_EXP(PRNG_ENGINE, seed)
 
