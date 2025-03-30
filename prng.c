@@ -3,17 +3,17 @@
 #define spmix_uint32_t prng_splitmix32
 #define spmix_uint64_t prng_splitmix64
 
-#if PRNG_HAS_INT128
+#if PRNGPP_HAS_INT128
 #define uint128_lit(h, l) ((prng_uint128_t)(h) << 64 | (l))
 #endif
 
 // Seed function definitions
 #define DO(name, ist, cnt, hasp, use_dflt) \
-PRNG_IF(use_dflt, \
+PRNGPP_IF(use_dflt, \
 void PRNGN_FUNC(name, seed)(PRNGN_STATE(name)* s, ist seed) { \
     for (size_t i = 0; i < cnt; i++) \
         s->s[i] = spmix_ ## ist(&seed); \
-    PRNG_IF(hasp, s->p = 0;) \
+    PRNGPP_IF(hasp, s->p = 0;) \
 })
 PRNG_LIST_OF_NAMES
 #undef DO
@@ -61,7 +61,7 @@ void prng_pcg32_seed(prng_pcg32_state_t* s, uint32_t seed) {
     s->inc   = prng_splitmix64(&seed64) | 1;
 }
 
-#if PRNG_HAS_INT128
+#if PRNGPP_HAS_INT128
 void prng_pcg64_seed(prng_pcg64_state_t* s, uint64_t seed) {
     s->state = uint128_lit(prng_splitmix64(&seed), prng_splitmix64(&seed));
     s->inc   = uint128_lit(prng_splitmix64(&seed), prng_splitmix64(&seed));
@@ -519,7 +519,7 @@ uint32_t prng_pcg32_gen(prng_pcg32_state_t* s) {
     return ror32(((olds >> 18) ^ olds) >> 27, olds >> 59);
 }
 
-#if PRNG_HAS_INT128
+#if PRNGPP_HAS_INT128
 uint64_t prng_pcg64_gen(prng_pcg64_state_t* s) {
     s->state = s->state * uint128_lit(
         2549297995355413924ull, 4865540595714422341ull) + s->inc;
@@ -551,7 +551,7 @@ uint8_t prng_lfsr64_gen_bit(prng_lfsr64_state_t* s) {
     return res;
 }
 
-#if PRNG_HAS_INT128
+#if PRNGPP_HAS_INT128
 uint8_t prng_lfsr128_gen_bit(prng_lfsr128_state_t* s) {
     // taps: 128, 126, 101, 99
     uint8_t res = s->s & 1;
@@ -576,7 +576,7 @@ uint64_t prng_lfsr64_gen(prng_lfsr64_state_t* s) {
     return res;
 }
 
-#if PRNG_HAS_INT128
+#if PRNGPP_HAS_INT128
 uint64_t prng_lfsr128_gen(prng_lfsr128_state_t* s) {
     uint64_t res = 0;
     for (size_t i = 0; i < 64; i++)

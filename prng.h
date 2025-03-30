@@ -10,16 +10,16 @@
 #include <stdint.h>
 
 #ifdef __SIZEOF_INT128__
-#define PRNG_HAS_INT128 1
+#define PRNGPP_HAS_INT128 1
 typedef __uint128_t prng_uint128_t;
 #else
-#define PRNG_HAS_INT128 0
+#define PRNGPP_HAS_INT128 0
 #endif
 
-#define PRNG_IF0(...)
-#define PRNG_IF1(...) __VA_ARGS__
-#define PRNG_IFc(c, ...) PRNG_IF ## c(__VA_ARGS__)
-#define PRNG_IF(c, ...) PRNG_IFc(c, __VA_ARGS__)
+#define PRNGPP_IF0(...)
+#define PRNGPP_IF1(...) __VA_ARGS__
+#define PRNGPP_IFc(c, ...) PRNGPP_IF ## c(__VA_ARGS__)
+#define PRNGPP_IF(c, ...) PRNGPP_IFc(c, __VA_ARGS__)
 
 /* DO:
  * basename
@@ -73,8 +73,8 @@ DO(mt19937_64,      uint64_t, 312, 1, 0) \
 DO(pcg32,  uint32_t, uint64_t state, inc;) \
 DO(msws32, uint32_t, uint64_t x, w, s;) \
 DO(msws64, uint64_t, uint64_t x0, x1, w0, w1, s0, s1;) \
-PRNG_IF(PRNG_HAS_INT128, DO(lfsr128, uint64_t, prng_uint128_t s;)) \
-PRNG_IF(PRNG_HAS_INT128, DO(pcg64,   uint64_t, prng_uint128_t state, inc;)) \
+PRNGPP_IF(PRNGPP_HAS_INT128, DO(lfsr128, uint64_t, prng_uint128_t s;)) \
+PRNGPP_IF(PRNGPP_HAS_INT128, DO(pcg64,   uint64_t, prng_uint128_t state, inc;)) \
 
 #define PRNGN_STATE(bn)    prng_ ## bn ## _state_t
 #define PRNGN_RET_T(bn)    prng_ ## bn ## _ret_t
@@ -85,9 +85,9 @@ extern "C" {
 #endif
 
 // State structures
-#define DO(name, ist, cnt, hasp, ...)  \
-typedef struct PRNGN_STATE(name) {      \
-    ist s[cnt]; PRNG_IF(hasp, size_t p;) \
+#define DO(name, ist, cnt, hasp, ...) \
+typedef struct PRNGN_STATE(name) { \
+    ist s[cnt]; PRNGPP_IF(hasp, size_t p;) \
 } PRNGN_STATE(name);
 PRNG_LIST_OF_NAMES
 #undef DO
@@ -127,7 +127,7 @@ void prng_mt19937_discard(prng_mt19937_state_t* state, size_t skip);
 void prng_mt19937_64_discard(prng_mt19937_64_state_t* state, size_t skip);
 uint8_t prng_lfsr32_gen_bit(prng_lfsr32_state_t* state);
 uint8_t prng_lfsr64_gen_bit(prng_lfsr64_state_t* state);
-PRNG_IF(PRNG_HAS_INT128, uint8_t prng_lfsr128_gen_bit(prng_lfsr128_state_t* state);)
+PRNGPP_IF(PRNGPP_HAS_INT128, uint8_t prng_lfsr128_gen_bit(prng_lfsr128_state_t* state);)
 
 #ifdef __cplusplus
 }

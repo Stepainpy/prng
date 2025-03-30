@@ -9,9 +9,9 @@
 
 #if !defined(__cplusplus) && \
     (defined(__GNUC__) || defined(__clang__))
-#define PRNGE_STATIC_SIZE static
+#define PRNGPP_STATIC_SIZE static
 #else
-#define PRNGE_STATIC_SIZE
+#define PRNGPP_STATIC_SIZE
 #endif
 
 #ifdef __cplusplus
@@ -23,7 +23,7 @@ typedef struct prnge_seedseq_t {
     uint32_t hash_mul;
 } prnge_seedseq_t;
 
-void prnge_seedseq_init(prnge_seedseq_t* sq, uint32_t init[PRNGE_STATIC_SIZE 4]);
+void prnge_seedseq_init(prnge_seedseq_t* sq, uint32_t init[PRNGPP_STATIC_SIZE 4]);
 void prnge_seedseq_update(prnge_seedseq_t* sq);
 void prnge_seedseq_get_u32(prnge_seedseq_t* sq, uint32_t* dest, size_t count);
 void prnge_seedseq_get_u64(prnge_seedseq_t* sq, uint64_t* dest, size_t count);
@@ -48,7 +48,7 @@ static uint32_t prnge__sq_mix(uint32_t x, uint32_t y) {
     return res;
 }
 
-void prnge_seedseq_init(prnge_seedseq_t* sq, uint32_t init[PRNGE_STATIC_SIZE 4]) {
+void prnge_seedseq_init(prnge_seedseq_t* sq, uint32_t init[PRNGPP_STATIC_SIZE 4]) {
     sq->state[0] = init[0];
     sq->state[1] = init[1];
     sq->state[2] = init[2];
