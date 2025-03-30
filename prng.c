@@ -87,21 +87,10 @@ uint64_t prng_splitmix64(uint64_t* x) {
     return z ^ (z >> 31);
 }
 
-static uint32_t rol32(uint32_t n, int s) {
-    return (n << s) | (n >> (32 - s));
-}
-
-static uint32_t ror32(uint32_t n, int s) {
-    return (n >> s) | (n << (32 - s));
-}
-
-static uint64_t rol64(uint64_t n, int s) {
-    return (n << s) | (n >> (64 - s));
-}
-
-static uint64_t ror64(uint64_t n, int s) {
-    return (n >> s) | (n << (64 - s));
-}
+static uint32_t rotl32(uint32_t n, int s) { return n << s | n >> (32 - s); }
+static uint32_t rotr32(uint32_t n, int s) { return n >> s | n << (32 - s); }
+static uint64_t rotl64(uint64_t n, int s) { return n << s | n >> (64 - s); }
+static uint64_t rotr64(uint64_t n, int s) { return n >> s | n << (64 - s); }
 
 uint32_t prng_xorshift32_gen(prng_xorshift32_state_t* s) {
     s->s[0] ^= s->s[0] << 13;
@@ -182,8 +171,8 @@ uint32_t prng_xoroshiro64s_gen(prng_xoroshiro64s_state_t* s) {
     const uint32_t res = s0 * 0x9E3779BB;
 
     s1 ^= s0;
-    s->s[0] = rol32(s0, 26) ^ s1 ^ (s1 << 9);
-    s->s[1] = rol32(s1, 13);
+    s->s[0] = rotl32(s0, 26) ^ s1 ^ (s1 << 9);
+    s->s[1] = rotl32(s1, 13);
 
     return res;
 }
@@ -191,11 +180,11 @@ uint32_t prng_xoroshiro64s_gen(prng_xoroshiro64s_state_t* s) {
 uint32_t prng_xoroshiro64ss_gen(prng_xoroshiro64ss_state_t* s) {
     uint32_t s0 = s->s[0];
     uint32_t s1 = s->s[1];
-    const uint32_t res = rol32(s0 * 0x9E3779BB, 5) * 5;
+    const uint32_t res = rotl32(s0 * 0x9E3779BB, 5) * 5;
 
     s1 ^= s0;
-    s->s[0] = rol32(s0, 26) ^ s1 ^ (s1 << 9);
-    s->s[1] = rol32(s1, 13);
+    s->s[0] = rotl32(s0, 26) ^ s1 ^ (s1 << 9);
+    s->s[1] = rotl32(s1, 13);
 
     return res;
 }
@@ -203,11 +192,11 @@ uint32_t prng_xoroshiro64ss_gen(prng_xoroshiro64ss_state_t* s) {
 uint64_t prng_xoroshiro128pp_gen(prng_xoroshiro128pp_state_t* s) {
     uint64_t s0 = s->s[0];
     uint64_t s1 = s->s[1];
-    const uint64_t res = rol64(s0 + s1, 17) + s0;
+    const uint64_t res = rotl64(s0 + s1, 17) + s0;
 
     s1 ^= s0;
-    s->s[0] = rol64(s0, 49) ^ s1 ^ (s1 << 21);
-    s->s[1] = rol64(s1, 28);
+    s->s[0] = rotl64(s0, 49) ^ s1 ^ (s1 << 21);
+    s->s[1] = rotl64(s1, 28);
 
     return res;
 }
@@ -215,11 +204,11 @@ uint64_t prng_xoroshiro128pp_gen(prng_xoroshiro128pp_state_t* s) {
 uint64_t prng_xoroshiro128ss_gen(prng_xoroshiro128ss_state_t* s) {
     uint64_t s0 = s->s[0];
     uint64_t s1 = s->s[1];
-    const uint64_t res = rol64(s0 * 5, 7) * 9;
+    const uint64_t res = rotl64(s0 * 5, 7) * 9;
 
     s1 ^= s0;
-    s->s[0] = rol64(s0, 24) ^ s1 ^ (s1 << 16);
-    s->s[1] = rol64(s1, 37);
+    s->s[0] = rotl64(s0, 24) ^ s1 ^ (s1 << 16);
+    s->s[1] = rotl64(s1, 37);
 
     return res;
 }
@@ -230,14 +219,14 @@ uint64_t prng_xoroshiro128p_gen(prng_xoroshiro128p_state_t* s) {
     const uint64_t res = s0 + s1;
 
     s1 ^= s0;
-    s->s[0] = rol64(s0, 24) ^ s1 ^ (s1 << 16);
-    s->s[1] = rol64(s1, 37);
+    s->s[0] = rotl64(s0, 24) ^ s1 ^ (s1 << 16);
+    s->s[1] = rotl64(s1, 37);
 
     return res;
 }
 
 uint32_t prng_xoshiro128pp_gen(prng_xoshiro128pp_state_t* s) {
-    const uint32_t res = rol32(s->s[0] + s->s[3], 7) + s->s[0];
+    const uint32_t res = rotl32(s->s[0] + s->s[3], 7) + s->s[0];
     uint32_t t = s->s[1] << 9;
 
     s->s[2] ^= s->s[0];
@@ -246,13 +235,13 @@ uint32_t prng_xoshiro128pp_gen(prng_xoshiro128pp_state_t* s) {
     s->s[0] ^= s->s[3];
 
     s->s[2] ^= t;
-    s->s[3] = rol64(s->s[3], 11);
+    s->s[3] = rotl64(s->s[3], 11);
 
     return res;
 }
 
 uint32_t prng_xoshiro128ss_gen(prng_xoshiro128ss_state_t* s) {
-    const uint32_t res = rol32(s->s[1] * 5, 7) * 9;
+    const uint32_t res = rotl32(s->s[1] * 5, 7) * 9;
     uint32_t t = s->s[1] << 9;
 
     s->s[2] ^= s->s[0];
@@ -261,7 +250,7 @@ uint32_t prng_xoshiro128ss_gen(prng_xoshiro128ss_state_t* s) {
     s->s[0] ^= s->s[3];
 
     s->s[2] ^= t;
-    s->s[3] = rol64(s->s[3], 11);
+    s->s[3] = rotl64(s->s[3], 11);
 
     return res;
 }
@@ -276,13 +265,13 @@ uint32_t prng_xoshiro128p_gen(prng_xoshiro128p_state_t* s) {
     s->s[0] ^= s->s[3];
 
     s->s[2] ^= t;
-    s->s[3] = rol64(s->s[3], 11);
+    s->s[3] = rotl64(s->s[3], 11);
 
     return res;
 }
 
 uint64_t prng_xoshiro256pp_gen(prng_xoshiro256pp_state_t* s) {
-    const uint64_t res = rol64(s->s[0] + s->s[3], 23) + s->s[0];
+    const uint64_t res = rotl64(s->s[0] + s->s[3], 23) + s->s[0];
     uint64_t t = s->s[1] << 17;
 
     s->s[2] ^= s->s[0];
@@ -291,13 +280,13 @@ uint64_t prng_xoshiro256pp_gen(prng_xoshiro256pp_state_t* s) {
     s->s[0] ^= s->s[3];
 
     s->s[2] ^= t;
-    s->s[3] = rol64(s->s[3], 45);
+    s->s[3] = rotl64(s->s[3], 45);
 
     return res;
 }
 
 uint64_t prng_xoshiro256ss_gen(prng_xoshiro256ss_state_t* s) {
-    const uint64_t res = rol64(s->s[1] * 5, 7) * 9;
+    const uint64_t res = rotl64(s->s[1] * 5, 7) * 9;
     uint64_t t = s->s[1] << 17;
     
     s->s[2] ^= s->s[0];
@@ -306,7 +295,7 @@ uint64_t prng_xoshiro256ss_gen(prng_xoshiro256ss_state_t* s) {
     s->s[0] ^= s->s[3];
 
     s->s[2] ^= t;
-    s->s[3] = rol64(s->s[3], 45);
+    s->s[3] = rotl64(s->s[3], 45);
 
     return res;
 }
@@ -321,13 +310,13 @@ uint64_t prng_xoshiro256p_gen(prng_xoshiro256p_state_t* s) {
     s->s[0] ^= s->s[3];
 
     s->s[2] ^= t;
-    s->s[3] ^= rol64(s->s[3], 45);
+    s->s[3] ^= rotl64(s->s[3], 45);
 
     return res;
 }
 
 uint64_t prng_xoshiro512pp_gen(prng_xoshiro512pp_state_t* s) {
-    const uint64_t res = rol64(s->s[0] + s->s[2], 17) + s->s[2];
+    const uint64_t res = rotl64(s->s[0] + s->s[2], 17) + s->s[2];
     uint64_t t = s->s[1] << 11;
 
     s->s[2] ^= s->s[0];
@@ -340,13 +329,13 @@ uint64_t prng_xoshiro512pp_gen(prng_xoshiro512pp_state_t* s) {
     s->s[6] ^= s->s[7];
 
     s->s[6] ^= t;
-    s->s[7] = rol64(s->s[7], 21);
+    s->s[7] = rotl64(s->s[7], 21);
 
     return res;
 }
 
 uint64_t prng_xoshiro512ss_gen(prng_xoshiro512ss_state_t* s) {
-    const uint64_t res = rol64(s->s[1] * 5, 7) * 9;
+    const uint64_t res = rotl64(s->s[1] * 5, 7) * 9;
     uint64_t t = s->s[1] << 11;
 
     s->s[2] ^= s->s[0];
@@ -359,7 +348,7 @@ uint64_t prng_xoshiro512ss_gen(prng_xoshiro512ss_state_t* s) {
     s->s[6] ^= s->s[7];
 
     s->s[6] ^= t;
-    s->s[7] = rol64(s->s[7], 21);
+    s->s[7] = rotl64(s->s[7], 21);
 
     return res;
 }
@@ -378,7 +367,7 @@ uint64_t prng_xoshiro512p_gen(prng_xoshiro512p_state_t* s) {
     s->s[6] ^= s->s[7];
 
     s->s[6] ^= t;
-    s->s[7] = rol64(s->s[7], 21);
+    s->s[7] = rotl64(s->s[7], 21);
 
     return res;
 }
@@ -387,11 +376,11 @@ uint64_t prng_xoroshiro1024pp_gen(prng_xoroshiro1024pp_state_t* s) {
     size_t q = s->p;
     uint64_t s0 = s->s[s->p = (s->p + 1) & 15];
     uint64_t s15 = s->s[q];
-    const uint64_t res = rol64(s0 + s15, 23) + s15;
+    const uint64_t res = rotl64(s0 + s15, 23) + s15;
 
     s15 ^= s0;
-    s->s[q] = rol64(s0, 25) ^ s15 ^ (s15 << 27);
-    s->s[s->p] = rol64(s15, 36);
+    s->s[q] = rotl64(s0, 25) ^ s15 ^ (s15 << 27);
+    s->s[s->p] = rotl64(s15, 36);
 
     return res;
 }
@@ -400,11 +389,11 @@ uint64_t prng_xoroshiro1024ss_gen(prng_xoroshiro1024ss_state_t* s) {
     size_t q = s->p;
     uint64_t s0 = s->s[s->p = (s->p + 1) & 15];
     uint64_t s15 = s->s[q];
-    const uint64_t res = rol64(s0 * 5, 7) * 9;
+    const uint64_t res = rotl64(s0 * 5, 7) * 9;
 
     s15 ^= s0;
-    s->s[q] = rol64(s0, 25) ^ s15 ^ (s15 << 27);
-    s->s[s->p] = rol64(s15, 36);
+    s->s[q] = rotl64(s0, 25) ^ s15 ^ (s15 << 27);
+    s->s[s->p] = rotl64(s15, 36);
 
     return res;
 }
@@ -416,8 +405,8 @@ uint64_t prng_xoroshiro1024s_gen(prng_xoroshiro1024s_state_t* s) {
     const uint64_t res = s0 * 0x9e3779b97f4a7c13;
 
     s15 ^= s0;
-    s->s[q] = rol64(s0, 25) ^ s15 ^ (s15 << 27);
-    s->s[s->p] = rol64(s15, 36);
+    s->s[q] = rotl64(s0, 25) ^ s15 ^ (s15 << 27);
+    s->s[s->p] = rotl64(s15, 36);
 
     return res;
 }
@@ -516,14 +505,14 @@ uint64_t prng_mt19937_64_gen(prng_mt19937_64_state_t* s) {
 uint32_t prng_pcg32_gen(prng_pcg32_state_t* s) {
     uint64_t olds = s->state;
     s->state = olds * 6364136223846793005ull + s->inc;
-    return ror32(((olds >> 18) ^ olds) >> 27, olds >> 59);
+    return rotr32(((olds >> 18) ^ olds) >> 27, olds >> 59);
 }
 
 #if PRNGPP_HAS_INT128
 uint64_t prng_pcg64_gen(prng_pcg64_state_t* s) {
     s->state = s->state * uint128_lit(
         2549297995355413924ull, 4865540595714422341ull) + s->inc;
-    return ror64(((uint64_t)(s->state >> 64)) ^ (uint64_t)s->state,
+    return rotr64(((uint64_t)(s->state >> 64)) ^ (uint64_t)s->state,
         s->state >> 122);
 }
 #endif
@@ -586,8 +575,8 @@ uint64_t prng_lfsr128_gen(prng_lfsr128_state_t* s) {
 #endif
 
 uint32_t prng_jsf32_gen(prng_jsf32_state_t* s) {
-    uint32_t t = s->s[0] - rol32(s->s[1], 27);
-    s->s[0] = s->s[1] ^ rol32(s->s[2], 17);
+    uint32_t t = s->s[0] - rotl32(s->s[1], 27);
+    s->s[0] = s->s[1] ^ rotl32(s->s[2], 17);
     s->s[1] = s->s[2] + s->s[3];
     s->s[2] = s->s[3] + t;
     s->s[3] = t + s->s[0];
@@ -595,9 +584,9 @@ uint32_t prng_jsf32_gen(prng_jsf32_state_t* s) {
 }
 
 uint64_t prng_jsf64_gen(prng_jsf64_state_t* s) {
-    uint64_t t = s->s[0] - rol64(s->s[1], 7);
-    s->s[0] = s->s[1] ^ rol64(s->s[2], 13);
-    s->s[1] = s->s[2] + rol64(s->s[3], 37);
+    uint64_t t = s->s[0] - rotl64(s->s[1], 7);
+    s->s[0] = s->s[1] ^ rotl64(s->s[2], 13);
+    s->s[1] = s->s[2] + rotl64(s->s[3], 37);
     s->s[2] = s->s[3] + t;
     s->s[3] = t + s->s[0];
     return s->s[3];
@@ -619,15 +608,15 @@ uint64_t prng_msws64_gen(prng_msws64_state_t* s) {
 
 uint64_t prng_siprand_gen(prng_siprand_state_t* s) {
     s->s[0] += s->s[1]; s->s[2] += s->s[3];
-    s->s[1] = rol64(s->s[1], 13);
-    s->s[3] = rol64(s->s[3], 16);
+    s->s[1] = rotl64(s->s[1], 13);
+    s->s[3] = rotl64(s->s[3], 16);
     s->s[1] ^= s->s[0]; s->s[3] ^= s->s[2];
-    s->s[0] = rol64(s->s[0], 32);
+    s->s[0] = rotl64(s->s[0], 32);
     
     s->s[2] += s->s[1]; s->s[0] += s->s[3];
-    s->s[1] = rol64(s->s[1], 17);
-    s->s[3] = rol64(s->s[3], 21);
+    s->s[1] = rotl64(s->s[1], 17);
+    s->s[3] = rotl64(s->s[3], 21);
     s->s[1] ^= s->s[2]; s->s[3] ^= s->s[0];
-    s->s[2] = rol64(s->s[2], 32);
+    s->s[2] = rotl64(s->s[2], 32);
     return s->s[0] ^ s->s[1] ^ s->s[2] ^ s->s[3];
 }
