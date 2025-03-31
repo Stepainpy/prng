@@ -39,12 +39,13 @@ All generators output number in range $[0; 2^w)$, where $w$ is output bit width.
 ## Basic API
 
 `prng_xxx_state_t` - structure of storage generator inner state  
+`prng_xxx_ret_t` - generator output integer type  
 `prng_xxx_seed` - set state of generator from passed seed  
 `prng_xxx_gen` - return pseudorandom integer  
 where `xxx` - name of prng.
 
 `PRNG_ENGINE` - name of generator by default, if not defined then equal `xoshiro256ss`  
-use for macros: `prng_state_t`, `prng_seed`, `prng_gen`.
+use for macros: `prng_state_t`, `prng_ret_t`, `prng_seed`, `prng_gen`.
 
 ## Extentions
 
